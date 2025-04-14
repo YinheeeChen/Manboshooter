@@ -75,3 +75,10 @@ Thumbs.db
 *.wav
 *.svg
 *.unity
+*.ai
+*.eps
+*.swf
+*.txt
+*.lighting
+*.prefab
+*.dwlt
