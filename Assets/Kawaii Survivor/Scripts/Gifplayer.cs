@@ -5,7 +5,7 @@ using UnityEngine;
 public class Gifplayer : MonoBehaviour
 {
     public List<Sprite> gifFrames; // 存储 GIF 的帧
-    public float frameRate = 0.01f; // 每帧的时间间隔
+    public float frameRate = 0.04f; // 每帧的时间间隔
     private SpriteRenderer spriteRenderer;
     private int currentFrame = 0;
     private float timer = 0f;
