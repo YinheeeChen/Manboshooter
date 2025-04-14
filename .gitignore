@@ -58,3 +58,20 @@
 
 # Windows
 Thumbs.db
+
+# Ignore all .png files
+*.png
+
+# Ignore all .asset files
+*.asset
+
+*.csproj
+*.sln
+*.ogg
+*.gif
+*.jpg
+*.jpeg
+*.mp3
+*.wav
+*.svg
+*.unity
