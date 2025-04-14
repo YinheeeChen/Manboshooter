@@ -5,9 +5,12 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    /// Variables
-    private Rigidbody2D rig;
+
+    [Header(" Player Controller Variables ")]
     [SerializeField] private MobileJoystick playerJoystick;
+    private Rigidbody2D rig;
+
+    [Header(" Player Speed ")]
     [SerializeField] private float speed = 5f;
 
     // Start is called before the first frame update
@@ -15,12 +18,6 @@ public class PlayerController : MonoBehaviour
     {
         rig = GetComponent<Rigidbody2D>();
         rig.velocity = Vector2.right;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private  void FixedUpdate() {
