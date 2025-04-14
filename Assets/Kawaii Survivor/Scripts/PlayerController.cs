@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
 {
     /// Variables
     private Rigidbody2D rig;
+    [SerializeField] private MobileJoystick playerJoystick;
+    [SerializeField] private float speed = 5f;
 
     // Start is called before the first frame update
     void Start()
@@ -19,5 +21,9 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private  void FixedUpdate() {
+        rig.velocity = playerJoystick.GetMoveVector() * speed * Time.deltaTime;
     }
 }
