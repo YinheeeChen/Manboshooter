@@ -52,6 +52,13 @@
 /[Aa]ssets/**/*.pidb
 /[Aa]ssets/**/*.booproj
 /[Aa]ssets/**/*.svd
+/[Aa]ssets/**/*.shader
+/[Aa]ssets/**/*.shadergraph
+/[Aa]ssets/**/*.ttf
+/[Aa]ssets/**/*.pdf
+/[Aa]ssets/**/*.cginc
+/[Aa]ssets/**/*.dwlt
+/[Aa]ssets/**/*.hlsl
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
