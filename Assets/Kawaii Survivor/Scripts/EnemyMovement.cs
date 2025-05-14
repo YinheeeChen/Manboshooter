@@ -7,12 +7,24 @@ public class EnemyMovement : MonoBehaviour
     [Header("Element")]
     private Player player;
 
+    [Header("Spawn Sequence Related")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer spawnIndicator;
+    private bool hasSpawned;
+
+
     [Header("Settings")]
     [SerializeField] private float speed;
     [SerializeField] private float playerDetectionRadius;
 
     [Header("Effects")]
     [SerializeField] private ParticleSystem passAwayParticles;
+
+    [Header("Attack")]
+    [SerializeField] private int damage;
+    [SerializeField] private float attackRate;
+    private float attackDelay;
+    private float attackTimer;
 
     // Start is called before the first frame update
     void Start()
@@ -23,16 +35,43 @@ public class EnemyMovement : MonoBehaviour
             Debug.LogError("Player not found in the scene.");
             Destroy(gameObject);
         }
+
+        // hide the enemy until the spawn sequence is over
+        spriteRenderer.enabled = false;
+        spawnIndicator.enabled = true;
+
+        // scale up & down the spawn indicator
+        Vector3 targetScale = spawnIndicator.transform.localScale * 1.5f;
+        LeanTween.scale(spawnIndicator.gameObject, targetScale, 0.5f).setLoopPingPong(4).setOnComplete(showEnemy);
+
+        attackDelay = 1f / attackRate;
+
+        // prevent the indictor from moving to the player
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (player != null)
-        {
-            FollowPlayer();
+        if(!hasSpawned) return;
+
+        FollowPlayer();
+
+        if(attackTimer >= attackDelay)
             TryAttackPlayer();
-        }
+        else
+            Wait();
+    }
+
+    private void Wait()
+    {
+        attackTimer += Time.deltaTime;
+    }
+
+    private void showEnemy()
+    {
+        spriteRenderer.enabled = true;
+        spawnIndicator.enabled = false;
+        hasSpawned = true;
     }
 
     private void FollowPlayer()
@@ -47,9 +86,15 @@ public class EnemyMovement : MonoBehaviour
         if (Vector2.Distance(transform.position, player.transform.position) < playerDetectionRadius)
         {
             // Attack logic here
-            PassAway();
+            Attack();
         }
         
+    }
+
+    private void Attack()
+    {
+        Debug.Log("Dealing " + damage + " damage to player.");
+        attackTimer = 0f;
     }
 
     private void PassAway()

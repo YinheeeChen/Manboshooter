@@ -31,6 +31,16 @@
 /[Aa]ssets/**/*.pidb
 /[Aa]ssets/**/*.booproj
 /[Aa]ssets/**/*.svd
+/[Aa]ssets/**/*.html
+/[Aa]ssets/**/*.mat
+/[Aa]ssets/**/*.cs
+/[Aa]ssets/**/*.psd
+/[Aa]ssets/**/*.ico
+/[Aa]ssets/**/*.fbx
+/[Aa]ssets/**/*.zip
+/[Aa]ssets/**/*.css
+/[Aa]ssets/**/*.physicMaterial
+/[Aa]ssets/**/*.json
 
 # Crashlytics generated files
 /[Aa]ssets/**/*.csproj
