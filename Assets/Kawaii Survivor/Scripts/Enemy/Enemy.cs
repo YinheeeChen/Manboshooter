@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 [RequireComponent(typeof(EnemyMovement))]
 public class Enemy : MonoBehaviour
@@ -9,8 +10,13 @@ public class Enemy : MonoBehaviour
     [Header("Components")]
     private EnemyMovement movement;
 
+    [Header("Settings")]
+    [SerializeField] private int maxHealth;
+    private int health;
+    [SerializeField] private TextMeshPro healthText;
+
     [Header("Element")]
-    private Player player; 
+    private Player player;
 
     [Header("Spawn Sequence Related")]
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -30,6 +36,9 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        health = maxHealth;
+        healthText.text = health.ToString();
+
         movement = GetComponent<EnemyMovement>();
 
         player = FindFirstObjectByType<Player>();
@@ -46,7 +55,7 @@ public class Enemy : MonoBehaviour
 
     private void StartSpawnSequence()
     {
-         // hide the enemy until the spawn sequence is over
+        // hide the enemy until the spawn sequence is over
         SetRendererVisivility(false);
 
         // scale up & down the spawn indicator
@@ -54,7 +63,20 @@ public class Enemy : MonoBehaviour
         LeanTween.scale(spawnIndicator.gameObject, targetScale, 0.5f).setLoopPingPong(4).setOnComplete(showEnemy);
     }
 
-     private void showEnemy()
+    public void TakeDamage(int damage)
+    {
+        int realDamage = Mathf.Min(damage, health);
+        health -= realDamage; 
+
+        healthText.text = health.ToString();
+
+        if (health <= 0)
+        {
+            PassAway();
+        }
+    }
+
+    private void showEnemy()
     {
         SetRendererVisivility(true);
         hasSpawned = true;
@@ -81,7 +103,7 @@ public class Enemy : MonoBehaviour
             // Attack logic here
             Attack();
         }
-        
+
     }
 
     private void Attack()
@@ -103,14 +125,18 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(attackTimer >= attackDelay)
+        if (attackTimer >= attackDelay)
             TryAttackPlayer();
         else
             Wait();
     }
 
-    private void OnDrawGizmosSelected() {
+    private void OnDrawGizmosSelected()
+    {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, playerDetectionRadius);
+
+        Gizmos.color = Color.green;
+        
     }
 }

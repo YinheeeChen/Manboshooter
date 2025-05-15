@@ -5,12 +5,15 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
     [Header("Elements")]
-    [SerializeField] private Transform enemy;
-
+    [SerializeField] private Transform hitDetectionTransform;
+    [SerializeField] private float hitDetectionRadius;
 
     [Header("Settings")]
     [SerializeField] private float range;
     [SerializeField] private LayerMask enemyMask;
+
+    [Header("Damage")]
+    [SerializeField] private int damage;
 
     [Header("Aiming")]
     [SerializeField] private float aimLerp;
@@ -25,6 +28,8 @@ public class Weapon : MonoBehaviour
     void Update()
     {
         AutoAim();
+
+        Attack();
     }
 
     private void AutoAim()
@@ -35,11 +40,21 @@ public class Weapon : MonoBehaviour
 
         if (closestEnemy != null)
         {
-            targetUpVector = (enemy.transform.position - transform.position).normalized;
+            targetUpVector = (closestEnemy.transform.position - transform.position).normalized;
         }
 
         transform.up = Vector3.Lerp(transform.up, targetUpVector, Time.deltaTime * aimLerp);
 
+    }
+
+    private void Attack()
+    {
+        Collider2D[] enemies = Physics2D.OverlapCircleAll(hitDetectionTransform.position, range, enemyMask);
+
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            enemies[i].GetComponent<Enemy>().TakeDamage(damage);
+        }
     }
 
     private Enemy GetClosestEnemy()
@@ -78,5 +93,8 @@ public class Weapon : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, range);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(hitDetectionTransform.position, hitDetectionRadius);
     }
 }
