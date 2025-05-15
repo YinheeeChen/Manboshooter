@@ -34,6 +34,7 @@
 /[Aa]ssets/**/*.html
 /[Aa]ssets/**/*.mat
 /[Aa]ssets/**/*.cs
+![Aa]ssets/Kawaii Survivor/Scripts/**/*.cs
 /[Aa]ssets/**/*.psd
 /[Aa]ssets/**/*.ico
 /[Aa]ssets/**/*.fbx
