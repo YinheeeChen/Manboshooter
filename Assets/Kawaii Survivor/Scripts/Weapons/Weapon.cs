@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    enum State
+    {
+        Idle,
+        Attacking
+    }
+
+    private State state;
+
     [Header("Elements")]
     [SerializeField] private Transform hitDetectionTransform;
     [SerializeField] private float hitDetectionRadius;
@@ -12,8 +20,13 @@ public class Weapon : MonoBehaviour
     [SerializeField] private float range;
     [SerializeField] private LayerMask enemyMask;
 
-    [Header("Damage")]
+    [Header("Attack")]
     [SerializeField] private int damage;
+    [SerializeField] private float attackDelay;
+    [SerializeField] private Animator animator;
+
+    private float attackTimer;
+    private List<Enemy> damagedEnemies = new List<Enemy>();
 
     [Header("Aiming")]
     [SerializeField] private float aimLerp;
@@ -21,15 +34,22 @@ public class Weapon : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        state = State.Idle;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        AutoAim();
+        switch (state)
+        {
+            case State.Idle:
+                AutoAim();
 
-        Attack();
+                break;
+            case State.Attacking:
+                break;
+        }
     }
 
     private void AutoAim()
@@ -40,12 +60,53 @@ public class Weapon : MonoBehaviour
 
         if (closestEnemy != null)
         {
+            MangeAttack();
             targetUpVector = (closestEnemy.transform.position - transform.position).normalized;
         }
 
         transform.up = Vector3.Lerp(transform.up, targetUpVector, Time.deltaTime * aimLerp);
 
+        IncrementAttackTimer();
+
     }
+
+    private void MangeAttack()
+    {
+        attackTimer += Time.deltaTime;
+
+        if (attackTimer >= attackDelay)
+        {
+            attackTimer = 0f;
+            StartAttack();
+        }
+    }
+
+    private void IncrementAttackTimer()
+    {
+        attackTimer += Time.deltaTime;
+    }
+
+    [NaughtyAttributes.Button]
+    private void StartAttack()
+    {
+        animator.Play("Attack");
+        state = State.Attacking;
+
+        damagedEnemies.Clear();
+    }
+
+    private void Attacking()
+    {
+        Attack();
+    }
+
+
+    private void StopAttack()
+    {
+        state = State.Idle;
+        damagedEnemies.Clear();
+    }
+        
 
     private void Attack()
     {
@@ -53,7 +114,12 @@ public class Weapon : MonoBehaviour
 
         for (int i = 0; i < enemies.Length; i++)
         {
-            enemies[i].GetComponent<Enemy>().TakeDamage(damage);
+            Enemy enemy = enemies[i].GetComponent<Enemy>();
+            if (!damagedEnemies.Contains(enemy))
+            {
+                enemy.TakeDamage(damage);
+                damagedEnemies.Add(enemy);
+            }
         }
     }
 

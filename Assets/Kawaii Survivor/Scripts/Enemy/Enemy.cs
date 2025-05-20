@@ -112,6 +112,7 @@ public class Enemy : MonoBehaviour
         player.TakeDamage(damage);
     }
 
+
     private void PassAway()
     {
         if (passAwayParticles != null)
