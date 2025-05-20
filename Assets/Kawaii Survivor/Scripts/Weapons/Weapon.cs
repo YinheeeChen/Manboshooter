@@ -45,9 +45,9 @@ public class Weapon : MonoBehaviour
         {
             case State.Idle:
                 AutoAim();
-
                 break;
             case State.Attacking:
+                Attacking();
                 break;
         }
     }
@@ -93,6 +93,7 @@ public class Weapon : MonoBehaviour
         state = State.Attacking;
 
         damagedEnemies.Clear();
+        animator.speed = 1f / attackDelay;
     }
 
     private void Attacking()
