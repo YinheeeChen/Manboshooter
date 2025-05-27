@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 [RequireComponent(typeof(EnemyMovement))]
 public class Enemy : MonoBehaviour
@@ -32,6 +33,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float playerDetectionRadius;
     private float attackDelay;
     private float attackTimer;
+
+    [Header("Actions")]
+    public static Action<int, Vector2> onDamageTaken;
 
     // Start is called before the first frame update
     void Start()
@@ -69,6 +73,8 @@ public class Enemy : MonoBehaviour
         health -= realDamage; 
 
         healthText.text = health.ToString();
+
+        onDamageTaken?.Invoke(damage, transform.position);
 
         if (health <= 0)
         {
