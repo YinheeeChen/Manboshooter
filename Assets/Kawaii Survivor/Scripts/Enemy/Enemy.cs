@@ -5,7 +5,7 @@ using TMPro;
 using System;
 
 [RequireComponent(typeof(EnemyMovement))]
-public class Enemy : MonoBehaviour
+public class MeleeEnemy : MonoBehaviour
 {
 
     [Header("Components")]

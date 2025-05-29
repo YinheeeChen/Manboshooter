@@ -12,11 +12,11 @@ public class DamageTextManager : MonoBehaviour
     [SerializeField] private ObjectPool<DamageText> damageTextPool;
 
     private void OnDestroy() {
-        Enemy.onDamageTaken -= EnemyHitCallback;
+        MeleeEnemy.onDamageTaken -= EnemyHitCallback;
     }
 
     private void Awake() {
-        Enemy.onDamageTaken += EnemyHitCallback;
+        MeleeEnemy.onDamageTaken += EnemyHitCallback;
     }
 
 
