@@ -55,7 +55,7 @@ public class Weapon : MonoBehaviour
 
     private void AutoAim()
     {
-        MeleeEnemy closestEnemy = GetClosestEnemy();
+        Enemy closestEnemy = GetClosestEnemy();
 
         Vector2 targetUpVector = Vector3.up;
 
@@ -131,9 +131,9 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    private MeleeEnemy GetClosestEnemy()
+    private Enemy GetClosestEnemy()
     {
-        MeleeEnemy closestEnemy = null;
+        Enemy closestEnemy = null;
         Vector2 targetUpVector = Vector3.up;
         Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, range, enemyMask);
 
@@ -148,7 +148,7 @@ public class Weapon : MonoBehaviour
 
         for (int i = 0; i < enemies.Length; i++)
         {
-            MeleeEnemy enemyChecked = enemies[i].GetComponent<MeleeEnemy>();
+            Enemy enemyChecked = enemies[i].GetComponent<Enemy>();
 
             float distance = Vector2.Distance(transform.position, enemyChecked.transform.position);
 
