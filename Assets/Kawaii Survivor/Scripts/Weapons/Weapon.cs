@@ -27,7 +27,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] private Animator animator;
 
     private float attackTimer;
-    private List<MeleeEnemy> damagedEnemies = new List<MeleeEnemy>();
+    private List<Enemy> damagedEnemies = new List<Enemy>();
 
     [Header("Aiming")]
     [SerializeField] private float aimLerp;
@@ -122,7 +122,7 @@ public class Weapon : MonoBehaviour
 
         for (int i = 0; i < enemies.Length; i++)
         {
-            MeleeEnemy enemy = enemies[i].GetComponent<MeleeEnemy>();
+            Enemy enemy = enemies[i].GetComponent<Enemy>();
             if (!damagedEnemies.Contains(enemy))
             {
                 enemy.TakeDamage(damage);
