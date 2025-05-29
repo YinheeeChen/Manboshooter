@@ -1,52 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using System;
 
-[RequireComponent(typeof(EnemyMovement))]
-public class MeleeEnemy : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
-
     [Header("Components")]
-    private EnemyMovement movement;
+    protected EnemyMovement movement;
 
     [Header("Settings")]
-    [SerializeField] private int maxHealth;
-    private int health;
-    [SerializeField] private TextMeshPro healthText;
+    [SerializeField] protected int maxHealth;
+    protected int health;
 
     [Header("Element")]
-    private Player player;
+    protected Player player;
 
     [Header("Spawn Sequence Related")]
-    [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private SpriteRenderer spawnIndicator;
-    [SerializeField] private Collider2D spawnIndicatorCollider;
-    private bool hasSpawned;
-
-    [Header("Effects")]
-    [SerializeField] private ParticleSystem passAwayParticles;
+    [SerializeField] protected SpriteRenderer spriteRenderer;
+    [SerializeField] protected SpriteRenderer spawnIndicator;
+    [SerializeField] protected Collider2D spawnIndicatorCollider;
+    protected bool hasSpawned;
 
     [Header("Attack")]
-    [SerializeField] private int damage;
-    [SerializeField] private float attackRate;
-    [SerializeField] private float playerDetectionRadius;
-    private float attackDelay;
-    private float attackTimer;
+    [SerializeField] protected float playerDetectionRadius;
+
+    [Header("Effects")]
+    [SerializeField] protected ParticleSystem passAwayParticles;
 
     [Header("Actions")]
     public static Action<int, Vector2> onDamageTaken;
 
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         health = maxHealth;
-        healthText.text = health.ToString();
 
         movement = GetComponent<EnemyMovement>();
 
         player = FindFirstObjectByType<Player>();
+
         if (player == null)
         {
             Debug.LogError("Player not found in the scene.");
@@ -55,32 +47,18 @@ public class MeleeEnemy : MonoBehaviour
 
         StartSpawnSequence();
 
-        attackDelay = 1f / attackRate;
     }
 
-    private void StartSpawnSequence()
+    // Update is called once per frame
+    void Update()
     {
-        // hide the enemy until the spawn sequence is over
-        SetRendererVisivility(false);
 
-        // scale up & down the spawn indicator
-        Vector3 targetScale = spawnIndicator.transform.localScale * 1.5f;
-        LeanTween.scale(spawnIndicator.gameObject, targetScale, 0.5f).setLoopPingPong(4).setOnComplete(showEnemy);
     }
 
-    public void TakeDamage(int damage)
+    private void SetRendererVisivility(bool value)
     {
-        int realDamage = Mathf.Min(damage, health);
-        health -= realDamage; 
-
-        healthText.text = health.ToString();
-
-        onDamageTaken?.Invoke(damage, transform.position);
-
-        if (health <= 0)
-        {
-            PassAway();
-        }
+        spriteRenderer.enabled = value;
+        spawnIndicator.enabled = !value;
     }
 
     private void showEnemy()
@@ -93,35 +71,16 @@ public class MeleeEnemy : MonoBehaviour
         movement.StorePlayer(player);
     }
 
-    private void SetRendererVisivility(bool value)
+    private void StartSpawnSequence()
     {
-        spriteRenderer.enabled = value;
-        spawnIndicator.enabled = !value;
+        // hide the enemy until the spawn sequence is over
+        SetRendererVisivility(false);
+
+        // scale up & down the spawn indicator
+        Vector3 targetScale = spawnIndicator.transform.localScale * 1.5f;
+        LeanTween.scale(spawnIndicator.gameObject, targetScale, 0.5f).setLoopPingPong(4).setOnComplete(showEnemy);
     }
-
-    private void Wait()
-    {
-        attackTimer += Time.deltaTime;
-    }
-
-
-    private void TryAttackPlayer()
-    {
-        if (Vector2.Distance(transform.position, player.transform.position) < playerDetectionRadius)
-        {
-            // Attack logic here
-            Attack();
-        }
-
-    }
-
-    private void Attack()
-    {
-        attackTimer = 0f;
-        player.TakeDamage(damage);
-    }
-
-
+    
     private void PassAway()
     {
         if (passAwayParticles != null)
@@ -132,24 +91,16 @@ public class MeleeEnemy : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(int damage)
     {
-        if (attackTimer >= attackDelay)
-            TryAttackPlayer();
-        else
-            Wait();
-            
-        if (hasSpawned)
-            movement.FollowPlayer();
-    }
+        int realDamage = Mathf.Min(damage, health);
+        health -= realDamage;
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, playerDetectionRadius);
+        onDamageTaken?.Invoke(damage, transform.position);
 
-        Gizmos.color = Color.green;
-        
+        if (health <= 0)
+        {
+            PassAway();
+        }
     }
 }
