@@ -16,7 +16,7 @@ public class MeleeEnemy : Enemy
 
 
     // Start is called before the first frame update
-    new void Start()
+    protected override void Start()
     {
         base.Start();
         attackDelay = 1f / attackRate;

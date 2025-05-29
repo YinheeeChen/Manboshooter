@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
     public static Action<int, Vector2> onDamageTaken;
 
     // Start is called before the first frame update
-    protected void Start()
+    protected virtual void Start()
     {
         health = maxHealth;
 

@@ -10,7 +10,7 @@ public class RangeEnemy : Enemy
     private RangeEnemyAttack rangeEnemyAttack;
 
     // Start is called before the first frame update
-    new void Start()
+    protected override void Start()
     {
         base.Start();
         rangeEnemyAttack = GetComponent<RangeEnemyAttack>();
