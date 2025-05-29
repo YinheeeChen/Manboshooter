@@ -73,11 +73,6 @@ public class EnemyBullet : MonoBehaviour
             // If the bullet hits another enemy, you can decide to destroy it or handle it differently
             Destroy(gameObject); // Destroy the bullet if it hits another enemy
         }
-        else if (collider.CompareTag("Wall"))
-        {
-            // If the bullet hits a wall, destroy it
-            Destroy(gameObject);
-        }
 
     }
 

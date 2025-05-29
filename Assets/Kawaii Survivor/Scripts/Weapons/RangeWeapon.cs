@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class RangeWeapon : Weapon
 {
@@ -8,16 +10,56 @@ public class RangeWeapon : Weapon
     [SerializeField] private Bullet bullet;
     [SerializeField] private Transform shootingPoint;
 
+    [Header("Pooling")]
+    private ObjectPool<Bullet> bulletPool;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        bulletPool = new ObjectPool<Bullet>(
+            CreateBulletInstance,
+            ActionOnGet,
+            ActionOnRelease,
+            ActionOnDestroy
+        );
     }
 
     // Update is called once per frame
     void Update()
     {
         AutoAim();
+    }
+
+
+    private Bullet CreateBulletInstance()
+    {
+        Bullet bullet = Instantiate(this.bullet, shootingPoint.position, Quaternion.identity);
+        bullet.Configure(this);
+
+        return bullet;
+    }
+
+    public void ReleaseBullet(Bullet bullet)
+    {
+        bulletPool.Release(bullet);
+    }
+
+    private void ActionOnGet(Bullet bullet)
+    {
+        bullet.Reload();
+        bullet.transform.position = shootingPoint.position;
+
+        bullet.gameObject.SetActive(true);
+    }
+
+    private void ActionOnRelease(Bullet bullet)
+    {
+        bullet.gameObject.SetActive(false);
+    }
+
+    private void ActionOnDestroy(Bullet bullet)
+    {
+        Destroy(bullet.gameObject);
     }
 
     private void AutoAim()
@@ -28,15 +70,13 @@ public class RangeWeapon : Weapon
 
         if (closestEnemy != null)
         {
-            transform.up = Vector3.Lerp(transform.up, targetUpVector, Time.deltaTime * aimLerp);
+            targetUpVector = (closestEnemy.transform.position - transform.position).normalized;
+            transform.up = targetUpVector;
             ManageShooting();
             return;
         }
 
-        targetUpVector = (closestEnemy.transform.position - transform.position).normalized;
-        transform.up = targetUpVector;
-
-        
+        transform.up = Vector3.Lerp(transform.up, targetUpVector, Time.deltaTime * aimLerp);
 
     }
 
@@ -55,7 +95,7 @@ public class RangeWeapon : Weapon
 
     private void Shoot()
     {
-        Bullet bulletInstance = Instantiate(bullet, shootingPoint.position, Quaternion.identity);
+        Bullet bulletInstance = bulletPool.Get();
         bulletInstance.Shoot(damage, transform.up);
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,7 @@ public class Bullet : MonoBehaviour
     [Header("Elements")]
     private Rigidbody2D rig;
     private Collider2D col;
+    private RangeWeapon rangeWeapon;
 
     [Header("Settings")]
     [SerializeField] private float speed = 5f;
@@ -34,8 +36,14 @@ public class Bullet : MonoBehaviour
 
     }
 
+    public void Configure(RangeWeapon rangeWeapon)
+    {
+        this.rangeWeapon = rangeWeapon;
+    }
+
     public void Shoot(int damage, Vector2 direction)
     {
+        Invoke("Release", 1); // Automatically release the bullet after 5 seconds if it doesn't hit anything
         this.damage = damage;
 
         transform.right = direction;
@@ -46,29 +54,32 @@ public class Bullet : MonoBehaviour
     {
         if (IsInLayerMask(collider.gameObject.layer, enemyMask))
         {
-            Attack(collider.GetComponent<Enemy>()); 
-            Destroy(gameObject); 
+            CancelInvoke();
 
-            if (collider.TryGetComponent(out Enemy enemy))
-            {
-                enemy.TakeDamage(damage);
-            }
-            else if (collider.TryGetComponent(out Player player))
-            {
-                player.TakeDamage(damage);
-            }
-
-            Destroy(gameObject); // Destroy the bullet on hit
+            Attack(collider.GetComponent<Enemy>());
+            Release();
         }
     }
 
     private bool IsInLayerMask(int layer, LayerMask layerMask)
     {
         return (layerMask.value & (1 << layer)) != 0;
-    }   
-    
+    }
+
     private void Attack(Enemy enemy)
     {
         enemy.TakeDamage(damage);
+    }
+
+    public void Reload()
+    {
+        rig.velocity = Vector2.zero; // Reset velocity
+        col.enabled = true; // Enable the collider for the next use
+    }
+    
+    private void Release()
+    {
+        if(!gameObject.activeSelf) return; // Check if the bullet is still active
+        rangeWeapon.ReleaseBullet(this);
     }
 }
