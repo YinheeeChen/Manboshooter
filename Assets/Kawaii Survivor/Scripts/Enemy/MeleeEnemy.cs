@@ -25,6 +25,9 @@ public class MeleeEnemy : Enemy
     // Update is called once per frame
     void Update()
     {
+        if(!CanAttack())
+            return;
+        
         if (attackTimer >= attackDelay)
             TryAttackPlayer();
         else

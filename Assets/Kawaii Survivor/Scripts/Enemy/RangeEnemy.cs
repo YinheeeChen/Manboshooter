@@ -21,10 +21,12 @@ public class RangeEnemy : Enemy
     // Update is called once per frame
     void Update()
     {
-        if (!spriteRenderer.enabled)
+        if (!CanAttack())
             return;
 
         ManageAttack();
+        
+        transform.localScale = player.transform.position.x > transform.position.x ? Vector3.one : Vector3.one.With(x: -1);
     }
 
     private void TryAttackPlayer()

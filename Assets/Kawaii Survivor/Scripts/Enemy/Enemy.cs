@@ -34,9 +34,7 @@ public class Enemy : MonoBehaviour
     protected virtual void Start()
     {
         health = maxHealth;
-
         movement = GetComponent<EnemyMovement>();
-
         player = FindFirstObjectByType<Player>();
 
         if (player == null)
@@ -50,9 +48,9 @@ public class Enemy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected bool CanAttack()
     {
-
+        return spriteRenderer.enabled;
     }
 
     private void SetRendererVisivility(bool value)
