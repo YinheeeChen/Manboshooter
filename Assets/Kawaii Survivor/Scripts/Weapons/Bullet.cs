@@ -14,6 +14,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float speed = 5f;
     [SerializeField] private LayerMask enemyMask;
     private int damage;
+    private Enemy target;
 
     private void Awake()
     {
@@ -52,11 +53,15 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
+        if (target != null) return; // If the bullet has already hit a target, ignore further collisions
+
         if (IsInLayerMask(collider.gameObject.layer, enemyMask))
         {
+            target = collider.GetComponent<Enemy>();
+
             CancelInvoke();
 
-            Attack(collider.GetComponent<Enemy>());
+            Attack(target);
             Release();
         }
     }
@@ -73,6 +78,7 @@ public class Bullet : MonoBehaviour
 
     public void Reload()
     {
+        target = null; // Reset target to allow the bullet to hit a new enemy
         rig.velocity = Vector2.zero; // Reset velocity
         col.enabled = true; // Enable the collider for the next use
     }
