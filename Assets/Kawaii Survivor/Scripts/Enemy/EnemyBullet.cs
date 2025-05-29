@@ -14,7 +14,7 @@ public class EnemyBullet : MonoBehaviour
     [SerializeField] private float speed = 5f;
     private int damage;
 
-    // a
+
     private void Awake()
     {
         rig = GetComponent<Rigidbody2D>();
