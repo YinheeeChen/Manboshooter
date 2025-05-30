@@ -14,6 +14,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float speed = 5f;
     [SerializeField] private LayerMask enemyMask;
     private int damage;
+    private bool isCriticalHit;
     private Enemy target;
 
     private void Awake()
@@ -42,10 +43,12 @@ public class Bullet : MonoBehaviour
         this.rangeWeapon = rangeWeapon;
     }
 
-    public void Shoot(int damage, Vector2 direction)
+    public void Shoot(int damage, Vector2 direction, bool isCriticalHit)
     {
         Invoke("Release", 1); // Automatically release the bullet after 5 seconds if it doesn't hit anything
         this.damage = damage;
+
+        this.isCriticalHit = isCriticalHit;
 
         transform.right = direction;
         rig.velocity = direction * speed; // Set bullet speed, adjust as needed
@@ -73,7 +76,7 @@ public class Bullet : MonoBehaviour
 
     private void Attack(Enemy enemy)
     {
-        enemy.TakeDamage(damage);
+        enemy.TakeDamage(damage, isCriticalHit);
     }
 
     public void Reload()

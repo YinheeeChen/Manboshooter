@@ -12,11 +12,11 @@ public class DamageTextManager : MonoBehaviour
     [SerializeField] private ObjectPool<DamageText> damageTextPool;
 
     private void OnDestroy() {
-        MeleeEnemy.onDamageTaken -= EnemyHitCallback;
+        Enemy.onDamageTaken -= EnemyHitCallback;
     }
 
     private void Awake() {
-        MeleeEnemy.onDamageTaken += EnemyHitCallback;
+        Enemy.onDamageTaken += EnemyHitCallback;
     }
 
 
@@ -39,6 +39,7 @@ public class DamageTextManager : MonoBehaviour
     private void ActionOnGet(DamageText instance)
     {
         instance.gameObject.SetActive(true);
+        // instance.GetComponent<Animator>().Play("Animate", -1, 0f);
     }
 
     private void ActionOnRelease(DamageText instance)
@@ -51,14 +52,14 @@ public class DamageTextManager : MonoBehaviour
         Destroy(instance.gameObject);
     }
 
-    private void EnemyHitCallback(int damage, Vector2 enemyPosition)
+    private void EnemyHitCallback(int damage, Vector2 enemyPosition, bool isCriticalHit)
     {
         DamageText damageTextInstance = damageTextPool.Get();
 
         Vector3 spawnPosition = enemyPosition + Vector2.up * 1.5f;
         damageTextInstance.transform.position = spawnPosition;
 
-        damageTextInstance.Animate(damage);
+        damageTextInstance.Animate(damage, isCriticalHit);
 
         LeanTween.delayedCall(1, () => {
             damageTextPool.Release(damageTextInstance);

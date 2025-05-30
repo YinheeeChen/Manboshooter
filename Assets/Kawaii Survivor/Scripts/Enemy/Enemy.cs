@@ -28,7 +28,7 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] protected ParticleSystem passAwayParticles;
 
     [Header("Actions")]
-    public static Action<int, Vector2> onDamageTaken;
+    public static Action<int, Vector2, bool> onDamageTaken;
 
     // Start is called before the first frame update
     protected virtual void Start()
@@ -89,12 +89,12 @@ public abstract class Enemy : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, bool isCriticalHit)
     {
         int realDamage = Mathf.Min(damage, health);
         health -= realDamage;
 
-        onDamageTaken?.Invoke(damage, transform.position);
+        onDamageTaken?.Invoke(damage, transform.position, isCriticalHit);
 
         if (health <= 0)
         {

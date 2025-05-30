@@ -61,6 +61,20 @@ public abstract class Weapon : MonoBehaviour
 
     }
 
+    protected int GetDamage(out bool isCriticalHit)
+    {
+        isCriticalHit = false;
+
+        if (Random.Range(0, 101) <= 50) // 10% chance for a critical hit
+        {
+            isCriticalHit = true;
+            return damage * 2; // Double damage for critical hit
+        }
+
+        return damage; // Normal damage
+
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
