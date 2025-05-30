@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Random = UnityEngine.Random;
+
 public class DropManager : MonoBehaviour
 {
     [Header("Elements")]
@@ -27,10 +29,11 @@ public class DropManager : MonoBehaviour
     {
 
     }
-    
+
     private void EnemyPassedAwayCallback(Vector2 enemyPosition)
     {
-        Instantiate(candyPrefab, enemyPosition, Quaternion.identity, transform);
+        Candy candyInstance = Instantiate(candyPrefab, enemyPosition, Quaternion.identity, transform);
+        candyInstance.name = "Candy" + Random.Range(0, 5000).ToString();
     }
 
 }
