@@ -29,6 +29,8 @@ public abstract class Enemy : MonoBehaviour
 
     [Header("Actions")]
     public static Action<int, Vector2, bool> onDamageTaken;
+    public static Action<Vector2> onPassedAway;
+
 
     // Start is called before the first frame update
     protected virtual void Start()
@@ -81,6 +83,8 @@ public abstract class Enemy : MonoBehaviour
     
     private void PassAway()
     {
+        onPassedAway?.Invoke(transform.position);
+
         if (passAwayParticles != null)
         {
             passAwayParticles.transform.SetParent(null);
