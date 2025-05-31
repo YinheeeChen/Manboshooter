@@ -8,18 +8,22 @@ public class PlayerDetection : MonoBehaviour
     [Header("Colliders")]
     [SerializeField] private CircleCollider2D detectionCollider;
 
-    private void FixedUpdate()
+    private void OnTriggerEnter2D(Collider2D collider)
     {
-        Collider2D[] candyColliders = Physics2D.OverlapCircleAll(
-            (Vector2)transform.position + detectionCollider.offset,
-            detectionCollider.radius);
-
-        foreach (Collider2D collider in candyColliders)
+        if (collider.TryGetComponent(out Candy candy))
         {
-            if (collider.TryGetComponent(out Candy candy))
-            {
-                candy.Collect(GetComponent<Player>());
-            }
+            if (!collider.IsTouching(detectionCollider))
+                return;
+
+            candy.Collect(GetComponent<Player>());
+        }
+        
+        if (collider.TryGetComponent(out Cash cash))
+        {
+            if (!collider.IsTouching(detectionCollider))
+                return;
+
+            cash.Collect(GetComponent<Player>());
         }
     }
 }
