@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
 
+[RequireComponent(typeof(WaveManagerUI))]
 public class WaveManger : MonoBehaviour
 {
     [Header("Elements")]
     [SerializeField] private Player player;
+    private WaveManagerUI ui;
 
     [Header("Settings")]
     [SerializeField] private float waveDuration;
@@ -17,6 +19,11 @@ public class WaveManger : MonoBehaviour
     [Header("Waves")]
     [SerializeField] private Wave[] waves;
     private List<float> localCounters = new List<float>();
+
+    private void Awake()
+    {
+        ui = GetComponent<WaveManagerUI>();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -30,18 +37,20 @@ public class WaveManger : MonoBehaviour
         if (!isTimerOn) return;
 
         if (timer < waveDuration)
+        {
             ManageCurrentWave();
+
+            string timeString = ((int)(waveDuration - timer)).ToString();
+            ui.UpdateTimerText(timeString);
+        }
+
         else
             StartWaveTransition();
     }
 
     private void StartWave(int waveIndex)
     {
-        if (waveIndex >= waves.Length)
-        {
-            Debug.Log("All waves completed!");
-            return;
-        }
+        ui.UpdateWaveText("Wave" + (currentWaveIndex + 1) + " / " + waves.Length);
 
         localCounters.Clear();
         foreach(WaveSegment segment in waves[waveIndex].segments)
@@ -64,8 +73,11 @@ public class WaveManger : MonoBehaviour
 
         currentWaveIndex++;
 
-        if(currentWaveIndex >= waves.Length)
-            Debug.Log("All waves completed!");
+        if (currentWaveIndex >= waves.Length)
+        {
+            ui.UpdateTimerText("");
+            ui.UpdateWaveText("Stage Complete!");
+        }
         else
             StartWave(currentWaveIndex);
     }
