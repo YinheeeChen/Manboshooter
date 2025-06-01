@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 public class WaveTransitionManager : MonoBehaviour, IGameStateListener
 {
     [Header("Elements")]
-    [SerializeField] private Button[] upgradeContainers;
+    [SerializeField] private UpgradeContainer[] upgradeContainers;
     private WaveManagerUI ui;
 
     [Header("Settings")]
@@ -51,9 +51,9 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
             Stat stat = (Stat)Enum.GetValues(typeof(Stat)).GetValue(randomIndex);
             string randomStatString = Enums.FormatStatName(stat);
 
-            upgradeContainers[i].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = randomStatString;
-            upgradeContainers[i].onClick.RemoveAllListeners();
-            upgradeContainers[i].onClick.AddListener(() =>
+            upgradeContainers[i].Configure(null, randomStatString, Random.Range(1, 100).ToString());
+            upgradeContainers[i].Button.onClick.RemoveAllListeners();
+            upgradeContainers[i].Button.onClick.AddListener(() =>
             {
                 // Here you would apply the upgrade logic, e.g.:
                 // player.UpgradeStat(stat);
