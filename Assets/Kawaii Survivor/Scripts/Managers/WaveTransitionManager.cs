@@ -11,14 +11,9 @@ using Random = UnityEngine.Random;
 public class WaveTransitionManager : MonoBehaviour, IGameStateListener
 {
     [Header("Elements")]
+    [SerializeField] private PlayerStatManager playerStatManager;
     [SerializeField] private UpgradeContainer[] upgradeContainers;
-    private WaveManagerUI ui;
-
-    [Header("Settings")]
-    [SerializeField] private float waveDuration;
-    private float timer;
-    private bool isTimerOn;
-    private int currentWaveIndex;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -51,14 +46,75 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
             Stat stat = (Stat)Enum.GetValues(typeof(Stat)).GetValue(randomIndex);
             string randomStatString = Enums.FormatStatName(stat);
 
-            upgradeContainers[i].Configure(null, randomStatString, Random.Range(1, 100).ToString());
+            string buttonString;
+            Action action = GetActionToPerform(stat, out buttonString);
+
+            upgradeContainers[i].Configure(null, randomStatString, buttonString);
             upgradeContainers[i].Button.onClick.RemoveAllListeners();
-            upgradeContainers[i].Button.onClick.AddListener(() =>
-            {
-                // Here you would apply the upgrade logic, e.g.:
-                // player.UpgradeStat(stat);
-                Debug.Log("Upgrading " + randomStatString);
-            });
+            upgradeContainers[i].Button.onClick.AddListener(() => action?.Invoke());
+            upgradeContainers[i].Button.onClick.AddListener(() => BonusSelectedCallback());
         }
+    }
+
+    public void BonusSelectedCallback()
+    {
+        GameManager.instance.WaveCompletedCallback();
+    }
+
+    private Action GetActionToPerform(Stat stat, out string buttonString)
+    {
+        buttonString = "";
+        float value;
+
+        value = Random.Range(1, 10);
+        buttonString = "+" + value.ToString() + " %";
+
+        switch (stat)
+        {
+            case Stat.Attack:
+                value = Random.Range(1, 10);
+                break;
+            case Stat.AttackSpeed:
+                value = Random.Range(1, 10);
+                break;
+            case Stat.CriticalChance:
+                value = Random.Range(1, 10);
+                break;
+            case Stat.CriticalPercent:
+                value = Random.Range(1f, 2f);
+                buttonString = "+" + value.ToString("F2") + " x";
+                break;
+            case Stat.MoveSpeed:
+                value = Random.Range(1, 10);
+                break;
+            case Stat.MaxHealth:
+                value = Random.Range(1, 5);
+                buttonString = "+" + value;
+                break;
+            case Stat.Range:
+                value = Random.Range(1f, 5f);
+                buttonString = "+" + value.ToString();
+                break;
+            case Stat.HealthRecoverySpeed:
+                value = Random.Range(1, 10);
+                break;
+            case Stat.Armor:
+                value = Random.Range(1, 10);
+                break;
+            case Stat.Luck:
+                value = Random.Range(1, 10);
+                break;
+            case Stat.Dodge:
+                value = Random.Range(1, 10);
+                break;
+            case Stat.LifeSteal:
+                value = Random.Range(1, 10);
+                break;
+            default:
+                return () => Debug.LogWarning("No action defined for this stat: " + stat);
+
+        }
+        return () => playerStatManager.AddPlayerStat(stat, value);
+
     }
 }
