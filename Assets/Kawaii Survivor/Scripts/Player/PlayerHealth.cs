@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -56,9 +55,6 @@ public class PlayerHealth : MonoBehaviour
 
     private void PassAway()
     {
-        // Handle player death
-        Debug.Log("Player has died.");
-        SceneManager.LoadScene(0); // Load the main menu scene (index 0)    
-        // You can add additional logic here, such as triggering animations or game over screens.
+        GameManager.instance.SetGmaeState(GameState.GAMEOVER);
     }
 }

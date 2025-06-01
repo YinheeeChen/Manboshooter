@@ -28,7 +28,7 @@ public class WaveManger : MonoBehaviour, IGameStateListener
     // Start is called before the first frame update
     void Start()
     {
-        StartWave(currentWaveIndex);
+
     }
 
     // Update is called once per frame
@@ -77,6 +77,8 @@ public class WaveManger : MonoBehaviour, IGameStateListener
         {
             ui.UpdateTimerText("");
             ui.UpdateWaveText("Stage Complete!");
+
+            GameManager.instance.SetGmaeState(GameState.STAGECOMPLETE);
         }
         else
             GameManager.instance.WaveCompletedCallback();
@@ -138,24 +140,13 @@ public class WaveManger : MonoBehaviour, IGameStateListener
     {
         switch (gameState)
         {
-            case GameState.MENU:
+            case GameState.GAME:
                 StartNextWave();
                 break;
 
-            case GameState.WAVETRANSITION:
+            case GameState.GAMEOVER:
                 isTimerOn = false;
-                ui.UpdateTimerText("");
-                ui.UpdateWaveText("Wave Transition");
-                break;
-
-            case GameState.SHOP:
-                isTimerOn = false;
-                ui.UpdateTimerText("");
-                ui.UpdateWaveText("Shop");
-                break;
-
-            case GameState.GAME:
-                StartWave(currentWaveIndex);
+                DefeatAllEnemies();
                 break;
 
             default:
