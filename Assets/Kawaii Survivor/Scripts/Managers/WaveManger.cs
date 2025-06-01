@@ -79,7 +79,8 @@ public class WaveManger : MonoBehaviour
             ui.UpdateWaveText("Stage Complete!");
         }
         else
-            StartWave(currentWaveIndex);
+            GameManager.instance.WaveCompletedCallback();
+        
     }
 
     private void DefeatAllEnemies()
