@@ -12,6 +12,7 @@ public class WaveManger : MonoBehaviour
     [SerializeField] private float waveDuration;
     private float timer;
     private bool isTimerOn;
+    private int currentWaveIndex;
 
     [Header("Waves")]
     [SerializeField] private Wave[] waves;
@@ -20,9 +21,7 @@ public class WaveManger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        localCounters.Add(1);
-
-        StartWave(0);
+        StartWave(currentWaveIndex);
     }
 
     // Update is called once per frame
@@ -32,6 +31,8 @@ public class WaveManger : MonoBehaviour
 
         if (timer < waveDuration)
             ManageCurrentWave();
+        else
+            StartWaveTransition();
     }
 
     private void StartWave(int waveIndex)
@@ -56,9 +57,27 @@ public class WaveManger : MonoBehaviour
         }
     }
 
+    private void StartWaveTransition()
+    {
+        isTimerOn = false;
+        DefeatAllEnemies();
+
+        currentWaveIndex++;
+
+        if(currentWaveIndex >= waves.Length)
+            Debug.Log("All waves completed!");
+        else
+            StartWave(currentWaveIndex);
+    }
+
+    private void DefeatAllEnemies()
+    {
+        transform.Clear();
+    }
+
     private void ManageCurrentWave()
     {
-        Wave currentWave = waves[0];
+        Wave currentWave = waves[currentWaveIndex];
 
         for (int i = 0; i < currentWave.segments.Count; i++)
         {
