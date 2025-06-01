@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +5,13 @@ using NaughtyAttributes;
 
 public class WaveManger : MonoBehaviour
 {
+    [Header("Elements")]
+    [SerializeField] private Player player;
+
     [Header("Settings")]
     [SerializeField] private float waveDuration;
     private float timer;
+    private bool isTimerOn;
 
     [Header("Waves")]
     [SerializeField] private Wave[] waves;
@@ -18,13 +21,39 @@ public class WaveManger : MonoBehaviour
     void Start()
     {
         localCounters.Add(1);
+
+        StartWave(0);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!isTimerOn) return;
+
         if (timer < waveDuration)
             ManageCurrentWave();
+    }
+
+    private void StartWave(int waveIndex)
+    {
+        if (waveIndex >= waves.Length)
+        {
+            Debug.Log("All waves completed!");
+            return;
+        }
+
+        localCounters.Clear();
+        foreach(WaveSegment segment in waves[waveIndex].segments)
+            localCounters.Add(1);
+        
+        timer = 0f;
+        isTimerOn = true;
+
+        localCounters.Clear();
+        for (int i = 0; i < waves[waveIndex].segments.Count; i++)
+        {
+            localCounters.Add(1);
+        }
     }
 
     private void ManageCurrentWave()
@@ -47,13 +76,25 @@ public class WaveManger : MonoBehaviour
 
             if (timeSinceSegmentStart / spawnDelay >= localCounters[i])
             {
-                Instantiate(segment.prefab, Vector2.zero, Quaternion.identity, transform);
+                Instantiate(segment.prefab, GetSpawnPosition(), Quaternion.identity, transform);
                 localCounters[i]++;
             }
 
         }
-        
+
         timer += Time.deltaTime;
+    }
+
+    private Vector2 GetSpawnPosition()
+    {
+        Vector2 direction = Random.onUnitSphere;
+        Vector2 offset = direction.normalized * Random.Range(6f, 10f);
+        Vector2 targetPosition = (Vector2)player.transform.position + offset;
+
+        targetPosition.x = Mathf.Clamp(targetPosition.x, -18f, 18f);
+        targetPosition.x = Mathf.Clamp(targetPosition.x, -8f, 8f);
+        
+        return targetPosition;
     }
 }
 

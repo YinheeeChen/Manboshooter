@@ -82,7 +82,7 @@ public class DropManager : MonoBehaviour
 
         if (!shouldDropChest) return;
 
-        Chest chest = Instantiate(chestPrefab, spawnPosition, Quaternion.identity, transform);
+        Instantiate(chestPrefab, spawnPosition, Quaternion.identity, transform);
     }
 
     private void RelaeaseCandy(Candy candy) => candyPool.Release(candy);
