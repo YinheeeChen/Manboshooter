@@ -4,7 +4,7 @@ using UnityEngine;
 using NaughtyAttributes;
 
 [RequireComponent(typeof(WaveManagerUI))]
-public class WaveManger : MonoBehaviour
+public class WaveManger : MonoBehaviour, IGameStateListener
 {
     [Header("Elements")]
     [SerializeField] private Player player;
@@ -83,6 +83,11 @@ public class WaveManger : MonoBehaviour
         
     }
 
+    private void StartNextWave()
+    {
+        StartWave(currentWaveIndex);
+    }
+
     private void DefeatAllEnemies()
     {
         transform.Clear();
@@ -127,6 +132,35 @@ public class WaveManger : MonoBehaviour
         targetPosition.x = Mathf.Clamp(targetPosition.x, -8f, 8f);
         
         return targetPosition;
+    }
+
+    public void GmaeStateChangeCallback(GameState gameState)
+    {
+        switch (gameState)
+        {
+            case GameState.MENU:
+                StartNextWave();
+                break;
+
+            case GameState.WAVETRANSITION:
+                isTimerOn = false;
+                ui.UpdateTimerText("");
+                ui.UpdateWaveText("Wave Transition");
+                break;
+
+            case GameState.SHOP:
+                isTimerOn = false;
+                ui.UpdateTimerText("");
+                ui.UpdateWaveText("Shop");
+                break;
+
+            case GameState.GAME:
+                StartWave(currentWaveIndex);
+                break;
+
+            default:
+                break;
+        }
     }
 }
 

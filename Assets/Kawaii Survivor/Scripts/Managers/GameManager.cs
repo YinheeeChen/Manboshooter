@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,23 +18,39 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
+        SetGmaeState(GameState.MENU);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    public void StartGame() => SetGmaeState(GameState.GAME);
+    public void StartShop() => SetGmaeState(GameState.SHOP);
+    
 
+    public void SetGmaeState(GameState state)
+    {
+        IEnumerable<IGameStateListener> gameStateListeners =
+            FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+            .OfType<IGameStateListener>();
+
+        foreach (IGameStateListener listener in gameStateListeners)
+        {
+            listener.GmaeStateChangeCallback(state);
+        }
     }
 
     public void WaveCompletedCallback()
     {
         if (Player.instance.HasLeveledUp())
         {
-            
+            SetGmaeState(GameState.WAVETRANSITION);
         }
         else
         {
-            
+            SetGmaeState(GameState.SHOP);
         }
     }
+}
+
+public interface IGameStateListener
+{
+    void GmaeStateChangeCallback(GameState gameState);
 }
