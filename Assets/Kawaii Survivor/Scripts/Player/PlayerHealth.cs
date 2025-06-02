@@ -5,27 +5,29 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages the player's health, armor, life steal, dodge, and health recovery.
+/// Implements IPlayerStatDependency for stat synchronization.
+/// </summary>
 public class PlayerHealth : MonoBehaviour, IPlayerStatDependency
 {
-
     [Header("Settings")]
-    [SerializeField] private int baseMaxHealth;
-    private float maxHealth;
-    private float health;
-    private float armor;
-    private float lifeSteal;
-    private float dodge;
-    private float healthRecoverySpeed;
-    private float healthRevoveryValue;
-    private float healthRecoveryTimer;
-    private float healthRecoveryDuration;
+    [SerializeField] private int baseMaxHealth; // The base maximum health of the player
+    private float maxHealth;                    // The current maximum health of the player
+    private float health;                       // The current health of the player
+    private float armor;                        // The player's armor value
+    private float lifeSteal;                    // The player's life steal percentage (0-1)
+    private float dodge;                        // The player's dodge chance (0-100)
+    private float healthRecoverySpeed;          // The player's health recovery speed
+    private float healthRecoveryTimer;          // Timer for health recovery
+    private float healthRecoveryDuration;       // Duration between each health recovery tick
 
     [Header("Elements")]
-    [SerializeField] private Slider healthSlider;
-    [SerializeField] private TextMeshProUGUI healthText;
+    [SerializeField] private Slider healthSlider;           // UI slider for displaying health
+    [SerializeField] private TextMeshProUGUI healthText;    // UI text for displaying health values
 
     [Header("Actions")]
-    public static Action<Vector2> onAttackDodged;
+    public static Action<Vector2> onAttackDodged;           // Event triggered when the player dodges an attack
 
     private void Awake()
     {
@@ -70,11 +72,15 @@ public class PlayerHealth : MonoBehaviour, IPlayerStatDependency
 
             float healthToAdd = Mathf.Min(.1f, maxHealth - health);
             health += healthToAdd;
-            
+
             UpdateHealthUI();
         }
     }   
 
+    /// <summary>
+    /// Applies damage to the player, considering dodge and armor.
+    /// </summary>
+    /// <param name="damage">The amount of damage to apply.</param>
     public void TakeDamage(int damage)
     {
         if (ShouldDodge())
@@ -100,23 +106,36 @@ public class PlayerHealth : MonoBehaviour, IPlayerStatDependency
         }
     }
 
+    /// <summary>
+    /// Determines if the player dodges an attack.
+    /// </summary>
+    /// <returns>True if dodged, false otherwise.</returns>
     private bool ShouldDodge()
     {
         return UnityEngine.Random.Range(0f, 100f) < dodge;
     }
 
+    /// <summary>
+    /// Handles player death.
+    /// </summary>
     private void PassAway()
     {
         GameManager.instance.SetGmaeState(GameState.GAMEOVER);
     }
 
+    /// <summary>
+    /// Updates the health UI elements.
+    /// </summary>
     private void UpdateHealthUI()
     {
         healthSlider.value = health / maxHealth;
         healthText.text = (int)health + " / " + maxHealth;
     }
 
-
+    /// <summary>
+    /// Updates player stats from the PlayerStatManager.
+    /// </summary>
+    /// <param name="playerStatManager">The PlayerStatManager instance.</param>
     public void UpdateStats(PlayerStatManager playerStatManager)
     {
         float addedHealth = playerStatManager.GetStatVlaue(Stat.MaxHealth);

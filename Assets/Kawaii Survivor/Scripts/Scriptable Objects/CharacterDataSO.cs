@@ -8,7 +8,6 @@ public class CharacterDataSO : ScriptableObject
 {
     [field: SerializeField] public string CharacterName { get; private set; }
     [field: SerializeField] public Sprite CharacterIcon { get; private set; }
-
     [field: SerializeField] public int PurchasePrice { get; private set; }
 
     [HorizontalLine]
@@ -42,7 +41,7 @@ public class CharacterDataSO : ScriptableObject
                 { Stat.Armor, armor },
                 { Stat.Luck, luck },
                 { Stat.Dodge, dodge },
-                { Stat.LifeSteal, lifeSteal }
+                { Stat.LifeSteal, lifeSteal },
             };
         }
         private set

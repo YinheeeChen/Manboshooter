@@ -27,7 +27,7 @@ public class PlayerStatManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        addends.Add(Stat.MaxHealth, 10);
+        // addends.Add(Stat.MaxHealth, 10);
 
         UpdatePlayerStats();
     }
