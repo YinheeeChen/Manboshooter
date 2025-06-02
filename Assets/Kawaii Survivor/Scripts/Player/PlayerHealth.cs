@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,12 +10,35 @@ public class PlayerHealth : MonoBehaviour, IPlayerStatDependency
 
     [Header("Settings")]
     [SerializeField] private int baseMaxHealth;
-    private int maxHealth;
-    private int health;
+    private float maxHealth;
+    private float health;
+    private float armor;
+    private float lifeSteal;
 
     [Header("Elements")]
     [SerializeField] private Slider healthSlider;
     [SerializeField] private TextMeshProUGUI healthText;
+
+    private void Awake()
+    {
+        Enemy.onDamageTaken += EnemyTookDamageCallback;
+    }
+
+    private void OnDestroy()
+    {
+        Enemy.onDamageTaken -= EnemyTookDamageCallback;
+    }
+
+    private void EnemyTookDamageCallback(int damage, Vector2 enemyPos, bool isCritical)
+    {
+        if (health >= maxHealth) return;
+
+        float lifeStealValue = damage * lifeSteal;
+        float healthToAdd = Mathf.Min(lifeStealValue, maxHealth - health);
+
+        health += healthToAdd;
+        UpdateHealthUI();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -28,15 +52,10 @@ public class PlayerHealth : MonoBehaviour, IPlayerStatDependency
         
     }
 
-    private void UpdateHealthUI()
-    {
-        healthSlider.value = (float)health / maxHealth;
-        healthText.text = $"{health} / {maxHealth}";
-    }
-
     public void TakeDamage(int damage)
     {
-        int realDamage = Mathf.Min(damage, health);
+        float realDamage = damage * Mathf.Clamp(1 - (armor / 1000), 0, 10000);
+        realDamage = Mathf.Min(realDamage, health);
         health -= realDamage; 
 
         UpdateHealthUI();
@@ -57,7 +76,12 @@ public class PlayerHealth : MonoBehaviour, IPlayerStatDependency
         GameManager.instance.SetGmaeState(GameState.GAMEOVER);
     }
 
-    
+    private void UpdateHealthUI()
+    {
+        healthSlider.value = health / maxHealth;
+        healthText.text = $"{health} / {maxHealth}";
+    }
+
 
     public void UpdateStats(PlayerStatManager playerStatManager)
     {
@@ -67,5 +91,8 @@ public class PlayerHealth : MonoBehaviour, IPlayerStatDependency
 
         health = maxHealth;
         UpdateHealthUI();
+
+        armor = playerStatManager.GetStatVlaue(Stat.Armor);
+        lifeSteal = playerStatManager.GetStatVlaue(Stat.LifeSteal) / 100;
     }
 }
