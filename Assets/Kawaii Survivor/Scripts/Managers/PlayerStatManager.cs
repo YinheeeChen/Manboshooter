@@ -6,9 +6,23 @@ using System.Linq;
 
 public class PlayerStatManager : MonoBehaviour
 {
+    [Header("Data")]
+    [SerializeField] private CharacterDataSO playerData;
+
     [Header("Settings")]
     // private List<StatData> statDatas = new List<StatData>();
     private Dictionary<Stat, float> addends = new Dictionary<Stat, float>();
+    private Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>();
+
+    private void Awake()
+    {
+        playerStats = playerData.BaseStats;
+
+        foreach(KeyValuePair<Stat, float> kvp in playerStats)
+        {
+            addends.Add(kvp.Key, 0f);
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +40,8 @@ public class PlayerStatManager : MonoBehaviour
 
     public float GetStatVlaue(Stat stat)
     {
-        return addends[stat];
+        float value = playerStats[stat] + addends[stat];
+        return value;
     }
 
     public void AddPlayerStat(Stat stat, float value)
