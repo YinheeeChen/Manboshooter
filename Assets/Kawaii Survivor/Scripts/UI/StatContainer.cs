@@ -25,7 +25,7 @@ public class StatContainer : MonoBehaviour
 
     public void SetFontSize(float fontSize)
     {
-        statText.fontSize = fontSize;
-        statValueText.fontSize = fontSize;
+        statText.fontSizeMax = fontSize;
+        statValueText.fontSizeMax = fontSize;
     }
 }
