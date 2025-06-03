@@ -23,19 +23,7 @@ public abstract class Weapon : MonoBehaviour, IPlayerStatDependency
     [SerializeField] protected float aimLerp;
 
     [Header("Level")]
-    [field: SerializeField] public int Level { get; private set; }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    public int Level { get; private set; }
 
     protected Enemy GetClosestEnemy()
     {
@@ -100,8 +88,14 @@ public abstract class Weapon : MonoBehaviour, IPlayerStatDependency
         criticalChance = Mathf.RoundToInt(WeaponData.GetStatValue(Stat.CriticalChance) * multiplier);
         criticalPercent = WeaponData.GetStatValue(Stat.CriticalPercent) * multiplier;
 
-        if(WeaponData.Prefab.GetType() == typeof(RangeWeapon))
+        if (WeaponData.Prefab.GetType() == typeof(RangeWeapon))
             range = WeaponData.GetStatValue(Stat.Range) * multiplier;
+    }
+
+    public void UpgradeTo(int targetLevel)
+    {
+        Level = targetLevel;
+        ConfigureStats();
     }
 
 }
