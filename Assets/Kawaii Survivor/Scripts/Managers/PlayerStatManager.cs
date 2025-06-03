@@ -13,20 +13,30 @@ public class PlayerStatManager : MonoBehaviour
     // private List<StatData> statDatas = new List<StatData>();
     private Dictionary<Stat, float> addends = new Dictionary<Stat, float>();
     private Dictionary<Stat, float> playerStats = new Dictionary<Stat, float>();
+    private Dictionary<Stat, float> objectAddends = new Dictionary<Stat, float>();
 
     private void Awake()
     {
         playerStats = playerData.BaseStats;
 
-        foreach(KeyValuePair<Stat, float> kvp in playerStats)
+        foreach (KeyValuePair<Stat, float> kvp in playerStats)
         {
             addends.Add(kvp.Key, 0f);
+            objectAddends.Add(kvp.Key, 0f);
         }
     }
 
     void Start() => UpdatePlayerStats();
 
-    public float GetStatVlaue(Stat stat) => playerStats[stat] + addends[stat];
+    public void AddObject(Dictionary<Stat, float> objectStats)
+    {
+        foreach (KeyValuePair<Stat, float> kvp in objectStats)
+            objectAddends[kvp.Key] += kvp.Value;
+
+        UpdatePlayerStats();
+    }
+
+    public float GetStatVlaue(Stat stat) => playerStats[stat] + addends[stat] + objectAddends[stat];
  
     public void AddPlayerStat(Stat stat, float value)
     {

@@ -18,13 +18,13 @@ public class WeaponSelectionContainer : MonoBehaviour
     [SerializeField] private Image[] levelImages;
     [SerializeField] private Image outline;
 
-    public void Configure(Sprite weaponSprite, string weaponName, int level, WeaponDataSO weaponData)
+    public void Configure(WeaponDataSO weaponData, int level)
     {
         if (weaponImage != null)
-            weaponImage.sprite = weaponSprite;
+            weaponImage.sprite = weaponData.WeaponIcon;
 
         if (weaponNameText != null)
-            weaponNameText.text = weaponName + $" (lvl {level + 1})";
+            weaponNameText.text = weaponData.WeaponName + $" (lvl {level + 1})";
 
         Color imageColor = ColorHolder.GetColor(level);
         weaponNameText.color = imageColor;

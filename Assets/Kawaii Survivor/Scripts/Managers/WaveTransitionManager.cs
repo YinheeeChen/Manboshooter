@@ -13,7 +13,21 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
     [Header("Elements")]
     [SerializeField] private PlayerStatManager playerStatManager;
     [SerializeField] private UpgradeContainer[] upgradeContainers;
-    
+
+    [Header("Settings")]
+    private int chestCollected;
+
+    private void Awake()
+    {
+        Chest.onCollected += ChestCollectedCallback;
+    }
+
+    private void OnDestroy()
+    {
+        Chest.onCollected -= ChestCollectedCallback;
+    }
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -32,9 +46,26 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
         switch (gameState)
         {
             case GameState.WAVETRANSITION:
-                ConfigureUpgradeContainers();
+                TryOpenChest();
                 break;
         }
+    }
+
+    private void TryOpenChest()
+    {
+        if (chestCollected > 0)
+        {
+            ShowObject();
+        }
+        else
+        {
+            ConfigureUpgradeContainers();
+        }
+    }
+
+    private void ShowObject()
+    {
+
     }
 
     [Button]
@@ -125,5 +156,10 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
         }
         return () => playerStatManager.AddPlayerStat(stat, value);
 
+    }
+
+        private void ChestCollectedCallback()
+    {
+        chestCollected++;
     }
 }
