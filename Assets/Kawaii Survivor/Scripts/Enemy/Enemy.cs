@@ -81,16 +81,17 @@ public abstract class Enemy : MonoBehaviour
         LeanTween.scale(spawnIndicator.gameObject, targetScale, 0.5f).setLoopPingPong(4).setOnComplete(showEnemy);
     }
     
-    private void PassAway()
+    public void PassAway()
     {
         onPassedAway?.Invoke(transform.position);
+        PassAwayAfterWave();
+    }
 
-        if (passAwayParticles != null)
-        {
-            passAwayParticles.transform.SetParent(null);
-            passAwayParticles.Play();
-            Destroy(gameObject);
-        }
+    public void PassAwayAfterWave()
+    {
+        passAwayParticles.transform.SetParent(null);
+        passAwayParticles.Play();
+        Destroy(gameObject);
     }
 
     public void TakeDamage(int damage, bool isCriticalHit)

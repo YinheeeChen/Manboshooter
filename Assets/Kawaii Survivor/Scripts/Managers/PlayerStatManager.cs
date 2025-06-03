@@ -24,26 +24,10 @@ public class PlayerStatManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        // addends.Add(Stat.MaxHealth, 10);
+    void Start() => UpdatePlayerStats();
 
-        UpdatePlayerStats();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public float GetStatVlaue(Stat stat)
-    {
-        float value = playerStats[stat] + addends[stat];
-        return value;
-    }
-
+    public float GetStatVlaue(Stat stat) => playerStats[stat] + addends[stat];
+ 
     public void AddPlayerStat(Stat stat, float value)
     {
         if (addends.ContainsKey(stat))
