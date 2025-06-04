@@ -198,8 +198,7 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
                 return () => Debug.LogWarning("No action defined for this stat: " + stat);
 
         }
-        buttonString = Enums.FormatStatName(stat) + "\n" + buttonString;
-        
+
         return () => playerStatManager.AddPlayerStat(stat, value);
 
     }
@@ -208,7 +207,6 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
     private void ChestCollectedCallback()
     {
         chestCollected++;
-        Debug.Log("Chest collected! Total: " + chestCollected);
     }
 
     public bool HasCollectedChest()

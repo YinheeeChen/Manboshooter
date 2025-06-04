@@ -30,7 +30,7 @@ public class StatContainerManager : MonoBehaviour
 
             Sprite icon = ResourcesManager.GetStatIcon(stat.Key);
             string statName = Enums.FormatStatName(stat.Key);
-            string statValue = stat.Value.ToString("F2");
+            float statValue = stat.Value;
 
             container.Configure(icon, statName, statValue);
         }
