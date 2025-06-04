@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     public static Player instance;
 
     [Header("Components")]
-    [SerializeField] private CircleCollider2D collider;
+    [SerializeField] private CircleCollider2D collider2d;
     private PlayerHealth playerHealth;
     private PlayerLevel playerLevel;
 
@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
     public Vector2 GetCenter()
     {
         // Return the center position of the player
-        return (Vector2)transform.position + collider.offset;
+        return (Vector2)transform.position + collider2d.offset;
     }
 
     public bool HasLeveledUp()
