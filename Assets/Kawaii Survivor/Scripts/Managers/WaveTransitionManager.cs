@@ -198,9 +198,12 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
                 return () => Debug.LogWarning("No action defined for this stat: " + stat);
 
         }
+        buttonString = Enums.FormatStatName(stat) + "\n" + buttonString;
+        
         return () => playerStatManager.AddPlayerStat(stat, value);
 
     }
+
 
     private void ChestCollectedCallback()
     {
