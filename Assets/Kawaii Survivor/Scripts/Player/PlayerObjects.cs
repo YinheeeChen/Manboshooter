@@ -6,12 +6,12 @@ using UnityEngine;
 public class PlayerObjects : MonoBehaviour
 {
     [field: SerializeField] public List<ObjectDataSO> Objects { get; private set; }
-    private PlayerStatManager playerStatManager;    
+    private PlayerStatManager playerStatManager;
 
     private void Awake()
     {
-        playerStatManager = GetComponent<PlayerStatManager>();  
-    }   
+        playerStatManager = GetComponent<PlayerStatManager>();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -25,5 +25,11 @@ public class PlayerObjects : MonoBehaviour
     void Update()
     {
 
+    }
+    
+    public void AddObject(ObjectDataSO objectData)
+    {
+        Objects.Add(objectData);
+        playerStatManager.AddObject(objectData.BaseStats);
     }
 }

@@ -96,14 +96,8 @@ public class PlayerHealth : MonoBehaviour, IPlayerStatDependency
         UpdateHealthUI();
 
         if (health <= 0)
-        {
             PassAway();
-        }
-        else
-        {
-            // Handle player taking damage
-            Debug.Log($"Player took {realDamage} damage. Remaining health: {health}");
-        }
+
     }
 
     /// <summary>

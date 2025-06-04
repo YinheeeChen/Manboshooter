@@ -10,9 +10,17 @@ using Random = UnityEngine.Random;
 
 public class WaveTransitionManager : MonoBehaviour, IGameStateListener
 {
+    [Header("Player")]
+    [SerializeField] private PlayerObjects playerObjects;
+
     [Header("Elements")]
     [SerializeField] private PlayerStatManager playerStatManager;
+    [SerializeField] private GameObject upgradeContainerParent;
     [SerializeField] private UpgradeContainer[] upgradeContainers;
+
+    [Header("Chest Related Stuff")]
+    [SerializeField] private ChestObjectContainer chestContainerPrefab;
+    [SerializeField] private Transform chestContainerParent;
 
     [Header("Settings")]
     private int chestCollected;
@@ -53,6 +61,8 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
 
     private void TryOpenChest()
     {
+        chestContainerParent.Clear();
+
         if (chestCollected > 0)
         {
             ShowObject();
@@ -65,12 +75,30 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
 
     private void ShowObject()
     {
+        chestCollected--;
 
+        upgradeContainerParent.SetActive(false);
+
+        ObjectDataSO[] objectDatas = ResourcesManager.Objects;
+        ObjectDataSO randomObjectData = objectDatas[Random.Range(0, objectDatas.Length)];
+
+        ChestObjectContainer chestObjectContainer = Instantiate(chestContainerPrefab, chestContainerParent);
+        chestObjectContainer.Configure(randomObjectData);
+
+        chestObjectContainer.TakeButton.onClick.AddListener(() => TakeButtonCallback(randomObjectData));
+    }
+
+    private void TakeButtonCallback(ObjectDataSO objectToTake)
+    {
+        playerObjects.AddObject(objectToTake);
+        TryOpenChest();
     }
 
     [Button]
     private void ConfigureUpgradeContainers()
     {
+        upgradeContainerParent.SetActive(true);
+
         for (int i = 0; i < upgradeContainers.Length; i++)
         {
             int randomIndex = Random.Range(0, Enum.GetValues(typeof(Stat)).Length);
@@ -158,8 +186,9 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
 
     }
 
-        private void ChestCollectedCallback()
+    private void ChestCollectedCallback()
     {
         chestCollected++;
+        Debug.Log("Chest collected! Total: " + chestCollected);
     }
 }

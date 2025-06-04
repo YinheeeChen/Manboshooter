@@ -26,7 +26,7 @@ public class ChestObjectContainer : MonoBehaviour
             icon.sprite = objectData.Icon;
 
         if (nameText != null)
-            nameText.text = name;
+            nameText.text = objectData.Name;
 
         Color imageColor = ColorHolder.GetColor(objectData.Rarity);
         nameText.color = imageColor;

@@ -44,11 +44,11 @@ public class GameManager : MonoBehaviour
     {
         if (Player.instance.HasLeveledUp())
         {
-            SetGmaeState(GameState.WAVETRANSITION);
+            SetGmaeState(GameState.SHOP);
         }
         else
         {
-            SetGmaeState(GameState.SHOP);
+            SetGmaeState(GameState.WAVETRANSITION);
         }
     }
 
