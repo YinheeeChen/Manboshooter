@@ -78,7 +78,7 @@ public abstract class Enemy : MonoBehaviour
 
         // scale up & down the spawn indicator
         Vector3 targetScale = spawnIndicator.transform.localScale * 1.5f;
-        LeanTween.scale(spawnIndicator.gameObject, targetScale, 0.5f).setLoopPingPong(4).setOnComplete(showEnemy);
+        LeanTween.scale(spawnIndicator.gameObject, targetScale, 0.5f).setLoopPingPong(2).setOnComplete(showEnemy);
     }
     
     public void PassAway()

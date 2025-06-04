@@ -92,8 +92,9 @@ public class WaveManger : MonoBehaviour, IGameStateListener
 
     private void DefeatAllEnemies()
     {
-        foreach(Enemy enemy in transform.GetComponentsInChildren<Enemy>())
-            enemy.PassAway();
+        foreach (Enemy enemy in transform.GetComponentsInChildren<Enemy>())
+            // enemy.PassAway(); drops
+            enemy.PassAwayAfterWave(); //without drops
     }
 
     private void ManageCurrentWave()
