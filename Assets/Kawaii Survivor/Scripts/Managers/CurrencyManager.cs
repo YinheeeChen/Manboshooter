@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CurrencyManager : MonoBehaviour
@@ -7,6 +9,9 @@ public class CurrencyManager : MonoBehaviour
     public static CurrencyManager instance;
 
     [field: SerializeField] public int Currency { get; private set; }
+
+    [Header("Actions")]
+    public static Action onUpdated;
 
     private void Awake()
     {
@@ -27,11 +32,22 @@ public class CurrencyManager : MonoBehaviour
 
     }
 
+
+    [NaughtyAttributes.Button("Add 500 Currency")]
+    public void Add500Currency()
+    {
+        AddCurrency(500);
+    }
+
     public void AddCurrency(int amount)
     {
         Currency += amount;
         UpdateTexts();
+
+        onUpdated?.Invoke();
     }
+
+    public void UseCoins(int price) => AddCurrency(-price);
 
     private void UpdateTexts()
     {
@@ -39,6 +55,10 @@ public class CurrencyManager : MonoBehaviour
 
         foreach (CurrencyText currencyText in currencyTexts)
             currencyText.UpdateText(Currency.ToString());
+    }
 
+    public bool HasEnoughCurrency(int price)
+    {
+        return Currency >= price;
     }
 }
