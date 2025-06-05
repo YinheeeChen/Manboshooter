@@ -16,8 +16,14 @@ public static class WeaponStatsCalculator
             else
                 calculatedStats.Add(stat.Key, stat.Value * multiplier);
 
-        }    
+        }
 
         return calculatedStats;
+    }
+    
+    public static int GetPurchasePrice(WeaponDataSO weaponData, int level)
+    {
+        float multiplier = 1 + (float)level / 3;
+        return Mathf.RoundToInt(weaponData.PurchasePrice * multiplier);
     }
 }
