@@ -12,6 +12,10 @@ public class ShopManager : MonoBehaviour, IGameStateListener
     [SerializeField] private Transform containerParent;
     [SerializeField] private ShopItemContainer shopItemContainerPrefab;
 
+    [Header("Player Components")]
+    [SerializeField] private PlayerWeapons playerWeapons;
+    [SerializeField] private PlayerObjects playerObjects;
+
     [Header("Reroll")]
     [SerializeField] private Button rerollButton;
     [SerializeField] private int rerollPrice;
@@ -19,11 +23,13 @@ public class ShopManager : MonoBehaviour, IGameStateListener
 
     private void Awake()
     {
+        ShopItemContainer.onPurchased += ShopItemPurchasedCallback;
         CurrencyManager.onUpdated += CurrencyUpdatedCallback;
     }
 
     private void OnDestroy()
     {
+        ShopItemContainer.onPurchased -= ShopItemPurchasedCallback;
         CurrencyManager.onUpdated -= CurrencyUpdatedCallback;
     }
 
@@ -92,7 +98,7 @@ public class ShopManager : MonoBehaviour, IGameStateListener
     public void Reroll()
     {
         Configure();
-        CurrencyManager.instance.UseCoins(rerollPrice);
+        CurrencyManager.instance.UseCurrency(rerollPrice);
     }
 
     public void UpdateRerollVisuals()
@@ -104,5 +110,32 @@ public class ShopManager : MonoBehaviour, IGameStateListener
     private void CurrencyUpdatedCallback()
     {
         UpdateRerollVisuals();
+    }
+
+    private void ShopItemPurchasedCallback(ShopItemContainer container, int weaponLevel)
+    {
+        if (container.WeaponData != null)
+            TryPurchaseWeapon(container, weaponLevel);
+        else
+            PurchaseObject(container);
+    }
+
+    private void TryPurchaseWeapon(ShopItemContainer container, int weaponLevel)
+    {
+        if (playerWeapons.TryAddWeapon(container.WeaponData, weaponLevel))
+        {
+            int price = WeaponStatsCalculator.GetPurchasePrice(container.WeaponData, weaponLevel);
+            CurrencyManager.instance.UseCurrency(price);
+
+            Destroy(container.gameObject);
+        }
+    }
+
+    private void PurchaseObject(ShopItemContainer container)
+    {
+        playerObjects.AddObject(container.ObjectData);
+        CurrencyManager.instance.UseCurrency(container.ObjectData.Price);
+        Destroy(container.gameObject);
+        
     }
 }

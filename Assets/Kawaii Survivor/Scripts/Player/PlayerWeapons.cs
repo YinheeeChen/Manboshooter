@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerWeapons : MonoBehaviour
 {
     [Header("Elements")]
-    [SerializeField] private WeaponPosition[] WeaponPositions;
+    [SerializeField] private WeaponPosition[] weaponPositions;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,8 +18,16 @@ public class PlayerWeapons : MonoBehaviour
 
     }
     
-    public void AddWeapon(WeaponDataSO selectedWeapon, int weaponLevel)
+    public bool TryAddWeapon(WeaponDataSO weapon, int weaponLevel)
     {
-        WeaponPositions[Random.Range(0, WeaponPositions.Length)].AssignWeapon(selectedWeapon.Prefab, weaponLevel);
+        for (int i = 0; i < weaponPositions.Length; i++)
+        {
+            if (weaponPositions[i].Weapon != null)
+                continue;
+
+            weaponPositions[i].AssignWeapon(weapon.Prefab, weaponLevel);
+            return true;
+        }
+        return false;
     }
 }
