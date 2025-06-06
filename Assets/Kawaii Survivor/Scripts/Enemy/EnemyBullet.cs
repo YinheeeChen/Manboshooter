@@ -68,11 +68,6 @@ public class EnemyBullet : MonoBehaviour
 
             rangeEnemyAttack.ReleaseBullet(this);
         }
-        else if (collider.TryGetComponent(out MeleeEnemy enemy))
-        {
-            // If the bullet hits another enemy, you can decide to destroy it or handle it differently
-            Destroy(gameObject); // Destroy the bullet if it hits another enemy
-        }
 
     }
 

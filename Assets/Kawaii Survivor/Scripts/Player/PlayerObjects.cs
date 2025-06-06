@@ -26,10 +26,17 @@ public class PlayerObjects : MonoBehaviour
     {
 
     }
-    
+
     public void AddObject(ObjectDataSO objectData)
     {
         Objects.Add(objectData);
         playerStatManager.AddObject(objectData.BaseStats);
+    }
+
+    public void RecycleObject(ObjectDataSO objectData)
+    {
+        Objects.Remove(objectData);
+        CurrencyManager.instance.AddCurrency(objectData.RecyclePrice);
+        playerStatManager.RemoveObjectStats(objectData.BaseStats);
     }
 }

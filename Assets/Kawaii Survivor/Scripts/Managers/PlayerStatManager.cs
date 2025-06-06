@@ -37,7 +37,7 @@ public class PlayerStatManager : MonoBehaviour
     }
 
     public float GetStatVlaue(Stat stat) => playerStats[stat] + addends[stat] + objectAddends[stat];
- 
+
     public void AddPlayerStat(Stat stat, float value)
     {
         if (addends.ContainsKey(stat))
@@ -48,16 +48,29 @@ public class PlayerStatManager : MonoBehaviour
 
         UpdatePlayerStats();
     }
-    
+
     public void UpdatePlayerStats()
     {
         IEnumerable<IPlayerStatDependency> playerStatDependencies =
-            FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+            FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None)
             .OfType<IPlayerStatDependency>();
 
         foreach (IPlayerStatDependency dependency in playerStatDependencies)
         {
             dependency.UpdateStats(this);
         }
+    }
+    
+    public void RemoveObjectStats(Dictionary<Stat, float> objectStats)
+    {
+        foreach (KeyValuePair<Stat, float> kvp in objectStats)
+        {
+            if (objectAddends.ContainsKey(kvp.Key))
+                objectAddends[kvp.Key] -= kvp.Value;
+            else
+                Debug.LogError($"Stat {kvp.Key} not found in object addends dictionary.");
+        }
+
+        UpdatePlayerStats();
     }
 }
