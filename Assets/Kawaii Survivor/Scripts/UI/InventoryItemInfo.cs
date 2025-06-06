@@ -33,6 +33,10 @@ public class InventoryItemInfo : MonoBehaviour
         );
 
         mergeButton.gameObject.SetActive(true);
+
+        mergeButton.interactable = WeaponMerger.instacne.CanMerge(weapon);
+        mergeButton.onClick.RemoveAllListeners();
+        mergeButton.onClick.AddListener(WeaponMerger.instacne.Merge);
     }
 
     public void Configure(ObjectDataSO objectData)

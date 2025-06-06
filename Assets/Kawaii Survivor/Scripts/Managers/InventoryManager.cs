@@ -19,14 +19,14 @@ public class InventoryManager : MonoBehaviour, IGameStateListener
     private void Awake()
     {
         ShopManager.onItemPurchased += ItemPurchasedCallback;
+        WeaponMerger.onMerge += WeaponMergedallback;
     }
 
     private void OnDestroy()
     {
         ShopManager.onItemPurchased -= ItemPurchasedCallback;
+        WeaponMerger.onMerge -= WeaponMergedallback;
     }
-
-
 
 
     // Start is called before the first frame update
@@ -55,7 +55,7 @@ public class InventoryManager : MonoBehaviour, IGameStateListener
 
         for (int i = 0; i < weapons.Length; i++)
         {
-            if(weapons[i] == null)
+            if (weapons[i] == null)
                 continue;
 
             InventoryItemContainer itemContainer = Instantiate(InventoryItemContainer, InventoryItemsParent);
@@ -110,7 +110,13 @@ public class InventoryManager : MonoBehaviour, IGameStateListener
         Configure();
         shopManagerUI.HideItemInfo();
     }
-    
+
     private void ItemPurchasedCallback() => Configure();
+    
+    private void WeaponMergedallback(Weapon weapon)
+    {
+        Configure();
+        inventoryItemInfo.Configure(weapon);
+    }
 
 }
