@@ -25,8 +25,6 @@ public class CurrencyManager : MonoBehaviour, IWantToBeSaved
         else
             Destroy(gameObject);
 
-        Load();
-
         //AddProCurrency(PlayerPrefs.GetInt(ProCurrencyKey, 100), false);
 
         Candy.onCollected += CandyCollectedCallback;
@@ -50,7 +48,7 @@ public class CurrencyManager : MonoBehaviour, IWantToBeSaved
         if (Sijil.TryLoad(this, ProCurrencyKey, out object proCurrencyValue))
             AddProCurrency((int)proCurrencyValue, false);
         else
-            AddProCurrency(100);
+            AddProCurrency(100, false);
     }
 
     // Start is called before the first frame update
