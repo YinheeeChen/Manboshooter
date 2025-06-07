@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,9 +13,11 @@ public class UIMnanager : MonoBehaviour, IGameStateListener
     [SerializeField] private GameObject stageCompletePanel;
     [SerializeField] private GameObject waveTransitionPanel;
     [SerializeField] private GameObject shopPanel;
+    [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject restartConfirmationPanel;
 
     private List<GameObject> panels = new List<GameObject>();
-    
+
     private void Awake()
     {
         panels.AddRange(new GameObject[]
@@ -27,18 +30,18 @@ public class UIMnanager : MonoBehaviour, IGameStateListener
             waveTransitionPanel,
             shopPanel
         });
+
+        GameManager.onGamePaused += GamePausedCallback;
+        GameManager.onGameResumed += GameResumedCallback;
+
+        pausePanel.SetActive(false);
+        HideRestartConfirmationPanel();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void OnDestroy()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        GameManager.onGamePaused -= GamePausedCallback;
+        GameManager.onGameResumed -= GameResumedCallback;
     }
 
     public void GmaeStateChangeCallback(GameState gameState)
@@ -54,7 +57,7 @@ public class UIMnanager : MonoBehaviour, IGameStateListener
             case GameState.GAME:
                 ShowPanel(gamePanel);
                 break;
-            case GameState.GAMEOVER:    
+            case GameState.GAMEOVER:
                 ShowPanel(gameOverPanel);
                 break;
             case GameState.STAGECOMPLETE:
@@ -74,4 +77,25 @@ public class UIMnanager : MonoBehaviour, IGameStateListener
         foreach (GameObject p in panels)
             p.SetActive(p == panel);
     }
+
+    private void GamePausedCallback()
+    {
+        pausePanel.SetActive(true);
+    }
+
+    private void GameResumedCallback()
+    {
+        pausePanel.SetActive(false);
+    }
+
+    public void ShowRestartConfirmationPanel()
+    {
+        restartConfirmationPanel.SetActive(true);
+    }
+
+    public void HideRestartConfirmationPanel()
+    {
+        restartConfirmationPanel.SetActive(false);
+    }
+
 }
