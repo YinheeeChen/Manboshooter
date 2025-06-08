@@ -15,6 +15,7 @@ public class UIMnanager : MonoBehaviour, IGameStateListener
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject restartConfirmationPanel;
+    [SerializeField] private GameObject characterSelectionPanel;
 
     private List<GameObject> panels = new List<GameObject>();
 
@@ -36,6 +37,7 @@ public class UIMnanager : MonoBehaviour, IGameStateListener
 
         pausePanel.SetActive(false);
         HideRestartConfirmationPanel();
+        HideCharacterSelectionPanel();
     }
 
     private void OnDestroy()
@@ -96,6 +98,16 @@ public class UIMnanager : MonoBehaviour, IGameStateListener
     public void HideRestartConfirmationPanel()
     {
         restartConfirmationPanel.SetActive(false);
+    }
+
+    public void ShowCharacterSelectionPanel()
+    {
+        characterSelectionPanel.SetActive(true);
+    }
+
+    public void HideCharacterSelectionPanel()
+    {
+        characterSelectionPanel.SetActive(false);
     }
 
 }
