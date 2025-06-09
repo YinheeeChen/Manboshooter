@@ -12,11 +12,7 @@ public class Gifplayer : MonoBehaviour
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        if (gifFrames == null || gifFrames.Count == 0)
-        {
-            Debug.LogError("请在 Inspector 中为 gifFrames 添加帧图像！");
-        }
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     void Update()
@@ -30,5 +26,19 @@ public class Gifplayer : MonoBehaviour
             currentFrame = (currentFrame + 1) % gifFrames.Count; // 循环播放
             spriteRenderer.sprite = gifFrames[currentFrame];
         }
+    }
+
+    public void SetFrames(List<Sprite> frames)
+    {
+        gifFrames = frames;
+        currentFrame = 0;
+        timer = 0f;
+    }
+
+    public void SetFrames(Sprite[] frames)
+    {
+        gifFrames = new List<Sprite>(frames);
+        currentFrame = 0;
+        timer = 0f;
     }
 }

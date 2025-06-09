@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class Player : MonoBehaviour
 
     [Header("Components")]
     [SerializeField] private CircleCollider2D collider2d;
+    [SerializeField] private SpriteRenderer playerRenderer;
     private PlayerHealth playerHealth;
     private PlayerLevel playerLevel;
 
@@ -21,7 +23,15 @@ public class Player : MonoBehaviour
 
         playerHealth = GetComponent<PlayerHealth>();
         playerLevel = GetComponent<PlayerLevel>();
+
+        CharacterSelectionManager.OnCharacterSelected += CharacterSelectedCallback;
     }
+
+    private void OnDestroy()
+    {
+        CharacterSelectionManager.OnCharacterSelected -= CharacterSelectedCallback;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,4 +60,18 @@ public class Player : MonoBehaviour
     {
         return playerLevel.HasLeveledUp();
     }
+
+
+    private void CharacterSelectedCallback(CharacterDataSO characterData)
+    {
+        playerRenderer.sprite = characterData.CharacterIcon;
+        
+        Gifplayer gifplayer = GetComponent<Gifplayer>();
+
+        if (gifplayer != null && characterData.CharacterFrames != null && characterData.CharacterFrames.Length > 0)
+        {
+            gifplayer.SetFrames(characterData.CharacterFrames);
+        }
+    }
+
 }

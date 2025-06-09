@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
+using Unity.Collections.LowLevel.Unsafe;
 
 [CreateAssetMenu(fileName = "Character Data", menuName = "Scriptable Objects/New Character Data", order = 0)]
 public class CharacterDataSO : ScriptableObject
 {
     [field: SerializeField] public string CharacterName { get; private set; }
     [field: SerializeField] public Sprite CharacterIcon { get; private set; }
+    [field: SerializeField] public Sprite[] CharacterFrames { get; private set; }
     [field: SerializeField] public int PurchasePrice { get; private set; }
 
     [HorizontalLine]
@@ -46,8 +48,24 @@ public class CharacterDataSO : ScriptableObject
         }
         private set
         {
-            
+
         }
     }
+    
+    public Dictionary<Stat, float> NonNeutralStats
+    {
+        get
+        {
+            Dictionary<Stat, float> nonNeutralStats = new Dictionary<Stat, float>();
+            foreach (KeyValuePair<Stat, float> kvp in BaseStats)
+                if (kvp.Value != 0)
+                    nonNeutralStats.Add(kvp.Key, kvp.Value);
+
+            return nonNeutralStats;
+        }
+        
+        private set{ }
+    }
+
 
 }
