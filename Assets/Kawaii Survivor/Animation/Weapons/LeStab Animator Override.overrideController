@@ -7,5 +7,7 @@ AnimatorOverrideController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LeStab Animator Override
-  m_Controller: {fileID: 0}
-  m_Clips: []
+  m_Controller: {fileID: 9100000, guid: 2a52e448a4fac0b42aec681e3e005158, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 12c548d5e3c9b4d468af7575fef0e224, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 4f068f51c994d3049a1765fc11f5be99, type: 2}

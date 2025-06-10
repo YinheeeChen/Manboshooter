@@ -74,7 +74,7 @@ public class RangeWeapon : Weapon
 
         if (closestEnemy != null)
         {
-            targetUpVector = (closestEnemy.transform.position - transform.position).normalized;
+            targetUpVector = (closestEnemy.GetCenter() - (Vector2)transform.position).normalized;
             transform.up = targetUpVector;
             ManageShooting();
             return;

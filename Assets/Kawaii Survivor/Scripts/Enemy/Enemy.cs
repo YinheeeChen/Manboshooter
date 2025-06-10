@@ -30,6 +30,8 @@ public abstract class Enemy : MonoBehaviour
     [Header("Actions")]
     public static Action<int, Vector2, bool> onDamageTaken;
     public static Action<Vector2> onPassedAway;
+    public static Action<Vector2> onBossPassedAway;
+    protected Action onSpawnSequenceCompleted;
 
 
     // Start is called before the first frame update
@@ -67,8 +69,10 @@ public abstract class Enemy : MonoBehaviour
         hasSpawned = true;
 
         spawnIndicatorCollider.enabled = true;
+        if (movement != null)
+            movement.StorePlayer(player);
 
-        movement.StorePlayer(player);
+        onSpawnSequenceCompleted?.Invoke();
     }
 
     private void StartSpawnSequence()
@@ -80,8 +84,8 @@ public abstract class Enemy : MonoBehaviour
         Vector3 targetScale = spawnIndicator.transform.localScale * 1.5f;
         LeanTween.scale(spawnIndicator.gameObject, targetScale, 0.5f).setLoopPingPong(2).setOnComplete(showEnemy);
     }
-    
-    public void PassAway()
+
+    public virtual void PassAway()
     {
         onPassedAway?.Invoke(transform.position);
         PassAwayAfterWave();
@@ -105,5 +109,10 @@ public abstract class Enemy : MonoBehaviour
         {
             PassAway();
         }
+    }
+    
+    public Vector2 GetCenter()
+    {
+        return (Vector2)transform.position + spawnIndicatorCollider.offset;
     }
 }

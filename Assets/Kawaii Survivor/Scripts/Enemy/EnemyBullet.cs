@@ -12,6 +12,7 @@ public class EnemyBullet : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float speed = 5f;
+    [SerializeField] private float angularSpeed;
     private int damage;
 
 
@@ -51,8 +52,12 @@ public class EnemyBullet : MonoBehaviour
     {
         this.damage = damage;
 
+        if(Mathf.Abs(direction.x + 1) < 0.01f)
+            direction.y += 0.1f;
+
         transform.right = direction;
-        rig.velocity = direction * speed; // Set bullet speed, adjust as needed
+        rig.velocity = direction * speed;
+        rig.angularVelocity = angularSpeed;
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
@@ -73,7 +78,11 @@ public class EnemyBullet : MonoBehaviour
 
     public void Reload()
     {
-        rig.velocity = Vector2.zero; // Reset velocity
-        col.enabled = true; // Enable the collider for the next use
+        rig.velocity = Vector2.zero;
+        rig.angularVelocity = 0;
+        col.enabled = true;
+
+        LeanTween.cancel(gameObject);
+        LeanTween.delayedCall(gameObject, 5f, () => rangeEnemyAttack.ReleaseBullet(this));
     }
 }

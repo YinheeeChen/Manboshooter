@@ -80,17 +80,6 @@ public class RangeEnemyAttack : MonoBehaviour
 
     public void AutoAim()
     {
-        // if (player == null)
-        // {
-        //     player = FindFirstObjectByType<Player>();
-        //     if (player == null)
-        //     {
-        //         Debug.LogError("Player not found in the scene.");
-        //         return;
-        //     }
-        // }
-
-        // Vector2 direction = (player.transform.position - shootingPoint.position).normalized;
         ManageShooting();
     }
 
@@ -110,11 +99,13 @@ public class RangeEnemyAttack : MonoBehaviour
     private void Shoot()
     {
         Vector2 direction = (player.GetCenter() - (Vector2)shootingPoint.position).normalized;
+        InstantShoot(direction);
+    }
 
+    public void InstantShoot(Vector2 direction)
+    {
         EnemyBullet bullet = bulletPool.Get();
-        
         bullet.Shoot(damage, direction);
     }
 
-    
 }

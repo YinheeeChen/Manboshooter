@@ -12,8 +12,8 @@ public class DropManager : MonoBehaviour
     [SerializeField] private Chest chestPrefab;
 
     [Header("Settings")]
-    [SerializeField] [Range(0,100)]private int cashDropChance;
-    [SerializeField] [Range(0,100)]private int chestDropChance;
+    [SerializeField][Range(0, 100)] private int cashDropChance;
+    [SerializeField][Range(0, 100)] private int chestDropChance;
 
     [Header("Pooling")]
     private ObjectPool<Candy> candyPool;
@@ -22,6 +22,7 @@ public class DropManager : MonoBehaviour
     private void Awake()
     {
         Enemy.onPassedAway += EnemyPassedAwayCallback;
+        Enemy.onBossPassedAway += BossEnemyPassedAwayCallback;
         Candy.onCollected += RelaeaseCandy;
         Cash.onCollected += RelaeaseCash;
     }
@@ -29,6 +30,7 @@ public class DropManager : MonoBehaviour
     private void OnDestroy()
     {
         Enemy.onPassedAway -= EnemyPassedAwayCallback;
+        Enemy.onBossPassedAway -= BossEnemyPassedAwayCallback;
         Candy.onCollected -= RelaeaseCandy;
         Cash.onCollected -= RelaeaseCash;
     }
@@ -76,17 +78,23 @@ public class DropManager : MonoBehaviour
         TryDropChest(enemyPosition);
     }
 
+        
+    private void BossEnemyPassedAwayCallback(Vector2 enemyPosition) => DropChest(enemyPosition);
+
     private void TryDropChest(Vector2 spawnPosition)
     {
         bool shouldDropChest = Random.Range(0, 101) <= chestDropChance;
 
         if (!shouldDropChest) return;
 
-        Instantiate(chestPrefab, spawnPosition, Quaternion.identity, transform);
+        DropChest(spawnPosition);
     }
+
+    private void DropChest(Vector2 spawnPosition) => Instantiate(chestPrefab, spawnPosition, Quaternion.identity, transform);
 
     private void RelaeaseCandy(Candy candy) => candyPool.Release(candy);
     private void RelaeaseCash(Cash cash) => cashPool.Release(cash);
+
 
 
 }
