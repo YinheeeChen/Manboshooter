@@ -44,6 +44,9 @@ public class SettingsManager : MonoBehaviour, IWantToBeSaved
     void Start()
     {
         CloseCreditsPanel();
+
+        onSFXStateChanged?.Invoke(sfxState);
+        onMusicStateChanged?.Invoke(musicState);
     }
 
 

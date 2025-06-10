@@ -14,6 +14,9 @@ public class RangeWeapon : Weapon
     [Header("Pooling")]
     private ObjectPool<Bullet> bulletPool;
 
+    [Header("Actions")]
+    public static Action onBulletShot;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -92,13 +95,17 @@ public class RangeWeapon : Weapon
         }
 
     }
-    
+
     private void Shoot()
     {
         int damage = GetDamage(out bool isCriticalHit);
 
         Bullet bulletInstance = bulletPool.Get();
         bulletInstance.Shoot(damage, transform.up, isCriticalHit);
+
+        onBulletShot?.Invoke();
+        
+        PlayAttackSound();
     }
 
     public override void UpdateStats(PlayerStatManager playerStatManager)

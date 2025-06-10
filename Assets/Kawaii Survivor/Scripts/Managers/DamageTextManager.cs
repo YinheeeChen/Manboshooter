@@ -64,7 +64,8 @@ public class DamageTextManager : MonoBehaviour
 
     private void ActionOnRelease(DamageText instance)
     {
-        instance.gameObject.SetActive(false);
+        if (instance != null)
+            instance.gameObject.SetActive(false);
     }
 
     private void ActionOnDestroy(DamageText instance)

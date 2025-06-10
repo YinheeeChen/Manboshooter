@@ -11,6 +11,9 @@ public class WeaponDataSO : ScriptableObject
     [field: SerializeField] public int PurchasePrice { get; private set; }
     [field: SerializeField] public int RecyclePrice { get; private set; }
 
+    [field: SerializeField] public AudioClip AttackSound { get; private set; }
+    [field: SerializeField] public AnimatorOverrideController AnimatorOverride { get; private set; }
+
     [field: SerializeField] public Weapon Prefab { get; private set; }
 
     [HorizontalLine]
