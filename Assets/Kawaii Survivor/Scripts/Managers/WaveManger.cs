@@ -128,9 +128,11 @@ public class WaveManger : MonoBehaviour, IGameStateListener
         Vector2 direction = Random.onUnitSphere;
         Vector2 offset = direction.normalized * Random.Range(6f, 10f);
         Vector2 targetPosition = (Vector2)player.transform.position + offset;
-
-        targetPosition.x = Mathf.Clamp(targetPosition.x, -18f, 18f);
-        targetPosition.x = Mathf.Clamp(targetPosition.x, -8f, 8f);
+        if (!GameManager.instance.UseInfiniteMap)
+        {
+        targetPosition.x = Mathf.Clamp(targetPosition.x, -Constants.arenaSize.x / 2, Constants.arenaSize.x / 2);
+        targetPosition.y = Mathf.Clamp(targetPosition.y, -Constants.arenaSize.y / 2, Constants.arenaSize.y / 2);
+        }
         
         return targetPosition;
     }

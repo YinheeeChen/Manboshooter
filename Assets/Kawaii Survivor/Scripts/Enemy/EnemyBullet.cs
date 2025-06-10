@@ -51,8 +51,9 @@ public class EnemyBullet : MonoBehaviour
     public void Shoot(int damage, Vector2 direction)
     {
         this.damage = damage;
+        // Debug.Log("Shooting bullet with damage: " + damage + " in direction: " + direction);
 
-        if(Mathf.Abs(direction.x + 1) < 0.01f)
+        if (Mathf.Abs(direction.x + 1) < 0.01f)
             direction.y += 0.1f;
 
         transform.right = direction;
@@ -64,13 +65,10 @@ public class EnemyBullet : MonoBehaviour
     {
         if (collider.TryGetComponent(out Player player))
         {
-            LeanTween.cancel(gameObject); // Cancel any existing tweens on the bullet
-            // StopCoroutine(ReleasCoroutine()); // Stop the release coroutine
-            // StopAllCoroutines(); // Stop all coroutines to prevent further actions
+            LeanTween.cancel(gameObject);
 
-            player.TakeDamage(1); // Assuming the bullet deals 1 damage
-            col.enabled = false; // Disable the collider to prevent multiple hits
-
+            player.TakeDamage(damage); 
+            col.enabled = false; 
             rangeEnemyAttack.ReleaseBullet(this);
         }
 

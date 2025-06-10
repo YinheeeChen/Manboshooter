@@ -14,15 +14,18 @@ public class NewBehaviourScript : MonoBehaviour
     // Start is called before the first frame update
     private void LateUpdate() {
         if (target == null){
-            Debug.LogError("no target！");
+            Debug.LogError("no target!");
             return;
         }
 
         Vector3 targetPos = target.position;
         targetPos.z = -10;
 
-        targetPos.x = Mathf.Clamp(targetPos.x, -minmaxXY.x, minmaxXY.x);
-        targetPos.y = Mathf.Clamp(targetPos.y, -minmaxXY.y, minmaxXY.y);
+        if (!GameManager.instance.UseInfiniteMap)
+        {
+            targetPos.x = Mathf.Clamp(targetPos.x, -minmaxXY.x, minmaxXY.x);
+            targetPos.y = Mathf.Clamp(targetPos.y, -minmaxXY.y, minmaxXY.y);
+        }
 
         transform.position = targetPos;
     }

@@ -1,13 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Resources;
-using Unity.VisualScripting;
-using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.UI;
 using Tabsil.Sijil;
-using UnityEngine.TextCore.Text;
 
 public class CharacterSelectionManager : MonoBehaviour, IWantToBeSaved
 {

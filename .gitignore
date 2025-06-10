@@ -60,6 +60,12 @@
 /[Aa]ssets/**/*.cginc
 /[Aa]ssets/**/*.dwlt
 /[Aa]ssets/**/*.hlsl
+/[Aa]ssets/**/*.apk
+/[Aa]ssets/**/*.hlsl
+/[Aa]ssets/**/*.hlsl
+/[Aa]ssets/**/*.json
+/[Aa]ssets/**/*.anim
+
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
@@ -100,3 +106,17 @@ Thumbs.db
 *.lighting
 *.prefab
 *.dwlt
+
+*.json
+*.cmake
+*.bin
+*.log
+*.ninja
+*.apk
+*.ninja_deps
+*.ninja_log
+*.ninja
+*.c
+*.o
+*.anim
+*.cpp
