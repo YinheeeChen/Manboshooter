@@ -4,29 +4,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages the shop UI panels, including player stats, inventory, and item info panels.
+/// Handles showing/hiding with animated transitions using LeanTween.
+/// </summary>
 public class ShopManagerUI : MonoBehaviour
 {
     [Header("Player Stats Elements")]
-    [SerializeField] private RectTransform playerStatsPanel;
-    [SerializeField] private RectTransform closeButton;
-    private Vector2 playerStatsOpenedPos;
-    private Vector2 playerStatsClosedPos;
+    [SerializeField] private RectTransform playerStatsPanel;       // Panel displaying player stats
+    [SerializeField] private RectTransform closeButton;            // Close button for player stats panel
+    private Vector2 playerStatsOpenedPos;                          // Position when player stats panel is visible
+    private Vector2 playerStatsClosedPos;                          // Position when player stats panel is hidden
 
-
-    [Header("Player Stats Elements")]
-    [SerializeField] private RectTransform inventorysPanel;
-    [SerializeField] private RectTransform inventorysPanelcloseButton;
-    private Vector2 inventorysPanelOpenedPos;
-    private Vector2 inventorysPanelClosedPos;
+    [Header("Inventory Panel Elements")]
+    [SerializeField] private RectTransform inventorysPanel;             // Inventory panel
+    [SerializeField] private RectTransform inventorysPanelcloseButton; // Close button for inventory panel
+    private Vector2 inventorysPanelOpenedPos;                          // Position when inventory panel is visible
+    private Vector2 inventorysPanelClosedPos;                          // Position when inventory panel is hidden
 
     [Header("Item Info Elements")]
-    [SerializeField] private RectTransform itemInfoPanel;
-    private Vector2 itemInfoOpenedPos;
-    private Vector2 itemInfoClosedPos;
+    [SerializeField] private RectTransform itemInfoPanel;          // Panel showing selected item details
+    private Vector2 itemInfoOpenedPos;                             // Position when item info panel is visible
+    private Vector2 itemInfoClosedPos;                             // Position when item info panel is hidden
 
-
-
-    // Start is called before the first frame update
+    /// <summary>
+    /// Initializes UI panels after one frame delay to ensure proper layout calculations.
+    /// </summary>
     IEnumerator Start()
     {
         yield return null;
@@ -36,13 +39,9 @@ public class ShopManagerUI : MonoBehaviour
         ConfigureItemInfoPanel();
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    /// <summary>
+    /// Configures the animation positions for the player stats panel.
+    /// </summary>
     private void ConfigurePlayerStatsPanel()
     {
         float width = Screen.width / (4 * playerStatsPanel.lossyScale.x);
@@ -52,10 +51,12 @@ public class ShopManagerUI : MonoBehaviour
         playerStatsClosedPos = playerStatsOpenedPos + Vector2.left * width;
 
         playerStatsPanel.anchoredPosition = playerStatsClosedPos;
-
         HidePlayerStats();
     }
 
+    /// <summary>
+    /// Configures the animation positions for the inventory panel.
+    /// </summary>
     private void ConfigureInventorysPanel()
     {
         float width = Screen.width / (4 * inventorysPanel.lossyScale.x);
@@ -65,10 +66,12 @@ public class ShopManagerUI : MonoBehaviour
         inventorysPanelClosedPos = inventorysPanelOpenedPos - Vector2.left * width;
 
         inventorysPanel.anchoredPosition = inventorysPanelClosedPos;
-
         HideInventorys(false);
     }
 
+    /// <summary>
+    /// Configures the animation positions for the item info panel.
+    /// </summary>
     private void ConfigureItemInfoPanel()
     {
         float height = Screen.height / (2 * itemInfoPanel.lossyScale.x);
@@ -78,11 +81,12 @@ public class ShopManagerUI : MonoBehaviour
         itemInfoClosedPos = itemInfoOpenedPos + Vector2.down * height;
 
         itemInfoPanel.anchoredPosition = itemInfoClosedPos;
-
         itemInfoPanel.gameObject.SetActive(false);
     }
 
-    [NaughtyAttributes.Button("Show Player Stats")]
+    /// <summary>
+    /// Shows the player stats panel with animation.
+    /// </summary>
     public void ShowPlayerStats()
     {
         playerStatsPanel.gameObject.SetActive(true);
@@ -96,7 +100,9 @@ public class ShopManagerUI : MonoBehaviour
         LeanTween.alpha(closeButton, 0.8f, 0.5f).setRecursive(false);
     }
 
-    [NaughtyAttributes.Button("Hide Player Stats")]
+    /// <summary>
+    /// Hides the player stats panel with animation.
+    /// </summary>
     public void HidePlayerStats()
     {
         closeButton.GetComponent<Image>().raycastTarget = false;
@@ -110,10 +116,11 @@ public class ShopManagerUI : MonoBehaviour
         LeanTween.alpha(closeButton, 0, 0.5f)
             .setRecursive(false)
             .setOnComplete(() => closeButton.gameObject.SetActive(false));
-
     }
 
-    [NaughtyAttributes.Button("Show Inventorys")]
+    /// <summary>
+    /// Shows the inventory panel with animation.
+    /// </summary>
     public void ShowInventorys()
     {
         inventorysPanel.gameObject.SetActive(true);
@@ -127,7 +134,10 @@ public class ShopManagerUI : MonoBehaviour
         LeanTween.alpha(inventorysPanelcloseButton, 0.8f, 0.5f).setRecursive(false);
     }
 
-    [NaughtyAttributes.Button("Hide Inventorys")]
+    /// <summary>
+    /// Hides the inventory panel with animation.
+    /// Also optionally hides the item info panel.
+    /// </summary>
     public void HideInventorys(bool hideItemInfo = true)
     {
         inventorysPanelcloseButton.GetComponent<Image>().raycastTarget = false;
@@ -141,11 +151,14 @@ public class ShopManagerUI : MonoBehaviour
         LeanTween.alpha(inventorysPanelcloseButton, 0, 0.5f)
             .setRecursive(false)
             .setOnComplete(() => inventorysPanelcloseButton.gameObject.SetActive(false));
-        if(hideItemInfo)
+
+        if (hideItemInfo)
             HideItemInfo();
     }
 
-    [NaughtyAttributes.Button("Show Item Info")]
+    /// <summary>
+    /// Shows the item info panel with animation.
+    /// </summary>
     public void ShowItemInfo()
     {
         itemInfoPanel.gameObject.SetActive(true);
@@ -154,8 +167,10 @@ public class ShopManagerUI : MonoBehaviour
         itemInfoPanel.LeanMove((Vector3)itemInfoOpenedPos, 0.3f)
             .setEase(LeanTweenType.easeOutBack);
     }
-    
-    [NaughtyAttributes.Button("Hide Item Info")]
+
+    /// <summary>
+    /// Hides the item info panel with animation.
+    /// </summary>
     public void HideItemInfo()
     {
         itemInfoPanel.LeanCancel();

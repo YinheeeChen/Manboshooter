@@ -1,32 +1,37 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using NaughtyAttributes;
 
 using Random = UnityEngine.Random;
 
+/// <summary>
+/// Manages the transition phase between waves, where the player receives upgrades or chests.
+/// Handles both stat bonus selection and object rewards.
+/// Implements IGameStateListener to respond to wave transition state.
+/// </summary>
 public class WaveTransitionManager : MonoBehaviour, IGameStateListener
 {
     public static WaveTransitionManager instance;
 
     [Header("Player")]
-    [SerializeField] private PlayerObjects playerObjects;
+    [SerializeField] private PlayerObjects playerObjects;                // Reference to player's object inventory
 
     [Header("Elements")]
-    [SerializeField] private PlayerStatManager playerStatManager;
-    [SerializeField] private GameObject upgradeContainerParent;
-    [SerializeField] private UpgradeContainer[] upgradeContainers;
+    [SerializeField] private PlayerStatManager playerStatManager;       // Reference to player stat system
+    [SerializeField] private GameObject upgradeContainerParent;         // Parent container for stat bonus UI
+    [SerializeField] private UpgradeContainer[] upgradeContainers;      // UI containers for stat upgrades
 
     [Header("Chest Related Stuff")]
-    [SerializeField] private ChestObjectContainer chestContainerPrefab;
-    [SerializeField] private Transform chestContainerParent;
+    [SerializeField] private ChestObjectContainer chestContainerPrefab; // Prefab for chest object UI container
+    [SerializeField] private Transform chestContainerParent;            // Parent for instantiated chest containers
 
     [Header("Settings")]
-    private int chestCollected;
+    private int chestCollected;                                         // Counter for how many chests were collected
 
+    /// <summary>
+    /// Initializes singleton and subscribes to chest collection event.
+    /// </summary>
     private void Awake()
     {
         if (instance == null)
@@ -37,35 +42,29 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
         Chest.onCollected += ChestCollectedCallback;
     }
 
+    /// <summary>
+    /// Unsubscribes from chest collection event on destruction.
+    /// </summary>
     private void OnDestroy()
     {
         Chest.onCollected -= ChestCollectedCallback;
     }
 
+    void Start() { }
+    void Update() { }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    /// <summary>
+    /// Called when game state changes. Activates upgrade/reward UI when entering wave transition.
+    /// </summary>
     public void GmaeStateChangeCallback(GameState gameState)
     {
-        switch (gameState)
-        {
-            case GameState.WAVETRANSITION:
-                TryOpenChest();
-                break;
-        }
+        if (gameState == GameState.WAVETRANSITION)
+            TryOpenChest();
     }
 
+    /// <summary>
+    /// Decides whether to show a chest reward or upgrade selection, based on chest count.
+    /// </summary>
     private void TryOpenChest()
     {
         chestContainerParent.Clear();
@@ -80,6 +79,9 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
         }
     }
 
+    /// <summary>
+    /// Displays a random object reward from a collected chest.
+    /// </summary>
     private void ShowObject()
     {
         chestCollected--;
@@ -96,18 +98,29 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
         chestObjectContainer.RecycleButton.onClick.AddListener(() => RecycleButtonCallback(randomObjectData));
     }
 
+    /// <summary>
+    /// Called when the player accepts a chest reward.
+    /// Adds object and continues transition flow.
+    /// </summary>
     private void TakeButtonCallback(ObjectDataSO objectToTake)
     {
         playerObjects.AddObject(objectToTake);
         TryOpenChest();
     }
 
+    /// <summary>
+    /// Called when the player recycles a chest reward.
+    /// Adds currency and continues transition flow.
+    /// </summary>
     private void RecycleButtonCallback(ObjectDataSO objectToRecycle)
     {
         CurrencyManager.instance.AddCurrency(objectToRecycle.RecyclePrice);
         TryOpenChest();
     }
 
+    /// <summary>
+    /// Randomly configures the upgrade containers with stat bonuses.
+    /// </summary>
     [Button]
     private void ConfigureUpgradeContainers()
     {
@@ -118,9 +131,8 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
             int randomIndex = Random.Range(0, Enum.GetValues(typeof(Stat)).Length);
             Stat stat = (Stat)Enum.GetValues(typeof(Stat)).GetValue(randomIndex);
             string randomStatString = Enums.FormatStatName(stat);
-
             Sprite upgradeSprite = ResourcesManager.GetStatIcon(stat);
-        
+
             string buttonString;
             Action action = GetActionToPerform(stat, out buttonString);
 
@@ -131,84 +143,70 @@ public class WaveTransitionManager : MonoBehaviour, IGameStateListener
         }
     }
 
+    /// <summary>
+    /// Callback after a bonus is selected. Notifies game manager to continue to next wave.
+    /// </summary>
     public void BonusSelectedCallback()
     {
         GameManager.instance.WaveCompletedCallback();
     }
 
+    /// <summary>
+    /// Returns an action that applies the stat bonus, and outputs button label string.
+    /// </summary>
     private Action GetActionToPerform(Stat stat, out string buttonString)
     {
         buttonString = "";
         float value;
 
-        // value = Random.Range(1, 10);
-        // buttonString = "+" + value.ToString() + " %";
-
         switch (stat)
         {
             case Stat.Attack:
-                value = Random.Range(1, 10);
-                buttonString = "+" + value.ToString() + " %";
-                break;
             case Stat.AttackSpeed:
-                value = Random.Range(1, 10);
-                buttonString = "+" + value.ToString() + " %";
-                break;
             case Stat.CriticalChance:
+            case Stat.MoveSpeed:
+            case Stat.HealthRecoverySpeed:
+            case Stat.Armor:
+            case Stat.Luck:
+            case Stat.Dodge:
+            case Stat.LifeSteal:
                 value = Random.Range(1, 10);
-                buttonString = "+" + value.ToString() + " %";
+                buttonString = "+" + value + " %";
                 break;
+
             case Stat.CriticalPercent:
                 value = Random.Range(1f, 2f);
                 buttonString = "+" + value.ToString("F2") + " x";
                 break;
-            case Stat.MoveSpeed:
-                value = Random.Range(1, 10);
-                buttonString = "+" + value.ToString() + " %";
-                break;
+
             case Stat.MaxHealth:
                 value = Random.Range(1, 5);
                 buttonString = "+" + value;
                 break;
+
             case Stat.Range:
                 value = Random.Range(1f, 5f);
                 buttonString = "+" + value.ToString();
                 break;
-            case Stat.HealthRecoverySpeed:
-                value = Random.Range(1, 10);
-                buttonString = "+" + value.ToString() + " %";
-                break;
-            case Stat.Armor:
-                value = Random.Range(1, 10);
-                buttonString = "+" + value.ToString() + " %";
-                break;
-            case Stat.Luck:
-                value = Random.Range(1, 10);
-                buttonString = "+" + value.ToString() + " %";
-                break;
-            case Stat.Dodge:
-                value = Random.Range(1, 10);
-                buttonString = "+" + value.ToString() + " %";
-                break;
-            case Stat.LifeSteal:
-                value = Random.Range(1, 10);
-                buttonString = "+" + value.ToString() + " %";
-                break;
+
             default:
                 return () => Debug.LogWarning("No action defined for this stat: " + stat);
-
         }
 
         return () => playerStatManager.AddPlayerStat(stat, value);
-
     }
 
-
+    /// <summary>
+    /// Called when a chest is collected during gameplay.
+    /// </summary>
     private void ChestCollectedCallback()
     {
         chestCollected++;
     }
 
+    /// <summary>
+    /// Returns whether the player has unclaimed chests.
+    /// </summary>
     public bool HasCollectedChest()
     {
         return chestCollected > 0;

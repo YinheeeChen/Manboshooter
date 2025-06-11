@@ -3,23 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manages all UI panels based on game state transitions and pause/resume events.
+/// Implements IGameStateListener to react to GameState changes from the GameManager.
+/// </summary>
 public class UIMnanager : MonoBehaviour, IGameStateListener
 {
     [Header("Panels")]
-    [SerializeField] private GameObject menuPanel;
-    [SerializeField] private GameObject weaponSelectionPanel;
-    [SerializeField] private GameObject gamePanel;
-    [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private GameObject stageCompletePanel;
-    [SerializeField] private GameObject waveTransitionPanel;
-    [SerializeField] private GameObject shopPanel;
-    [SerializeField] private GameObject pausePanel;
-    [SerializeField] private GameObject restartConfirmationPanel;
-    [SerializeField] private GameObject characterSelectionPanel;
-    [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject menuPanel;                    // Main menu panel
+    [SerializeField] private GameObject weaponSelectionPanel;        // Weapon selection panel
+    [SerializeField] private GameObject gamePanel;                   // In-game HUD panel
+    [SerializeField] private GameObject gameOverPanel;               // Game over screen
+    [SerializeField] private GameObject stageCompletePanel;          // Stage complete screen
+    [SerializeField] private GameObject waveTransitionPanel;         // Panel shown during wave transitions
+    [SerializeField] private GameObject shopPanel;                   // In-game shop UI
+    [SerializeField] private GameObject pausePanel;                  // Pause menu panel
+    [SerializeField] private GameObject restartConfirmationPanel;    // Restart confirmation popup
+    [SerializeField] private GameObject characterSelectionPanel;     // Character selection UI
+    [SerializeField] private GameObject settingsPanel;               // Settings UI panel
 
-    private List<GameObject> panels = new List<GameObject>();
+    private List<GameObject> panels = new List<GameObject>();        // List of all primary game state panels
 
+    /// <summary>
+    /// Initializes UI panel list and subscribes to pause/resume events.
+    /// </summary>
     private void Awake()
     {
         panels.AddRange(new GameObject[]
@@ -39,16 +46,22 @@ public class UIMnanager : MonoBehaviour, IGameStateListener
         pausePanel.SetActive(false);
         HideRestartConfirmationPanel();
         HideCharacterSelectionPanel();
-
         HideSettingsPanel();
     }
 
+    /// <summary>
+    /// Unsubscribes from game pause/resume events.
+    /// </summary>
     private void OnDestroy()
     {
         GameManager.onGamePaused -= GamePausedCallback;
         GameManager.onGameResumed -= GameResumedCallback;
     }
 
+    /// <summary>
+    /// Responds to GameState changes and activates the appropriate UI panel.
+    /// </summary>
+    /// <param name="gameState">The current game state.</param>
     public void GmaeStateChangeCallback(GameState gameState)
     {
         switch (gameState)
@@ -77,50 +90,77 @@ public class UIMnanager : MonoBehaviour, IGameStateListener
         }
     }
 
+    /// <summary>
+    /// Activates the specified panel and deactivates all others in the main panel list.
+    /// </summary>
+    /// <param name="panel">The panel to show.</param>
     private void ShowPanel(GameObject panel)
     {
         foreach (GameObject p in panels)
             p.SetActive(p == panel);
     }
 
+    /// <summary>
+    /// Shows the pause panel when the game is paused.
+    /// </summary>
     private void GamePausedCallback()
     {
         pausePanel.SetActive(true);
     }
 
+    /// <summary>
+    /// Hides the pause panel when the game resumes.
+    /// </summary>
     private void GameResumedCallback()
     {
         pausePanel.SetActive(false);
     }
 
+    /// <summary>
+    /// Shows the restart confirmation popup.
+    /// </summary>
     public void ShowRestartConfirmationPanel()
     {
         restartConfirmationPanel.SetActive(true);
     }
 
+    /// <summary>
+    /// Hides the restart confirmation popup.
+    /// </summary>
     public void HideRestartConfirmationPanel()
     {
         restartConfirmationPanel.SetActive(false);
     }
 
+    /// <summary>
+    /// Shows the character selection panel.
+    /// </summary>
     public void ShowCharacterSelectionPanel()
     {
         characterSelectionPanel.SetActive(true);
     }
 
+    /// <summary>
+    /// Hides the character selection panel.
+    /// </summary>
     public void HideCharacterSelectionPanel()
     {
         characterSelectionPanel.SetActive(false);
     }
 
+    /// <summary>
+    /// Shows the settings panel.
+    /// </summary>
     public void ShowSettingsPanel()
     {
         settingsPanel.SetActive(true);
     }
 
+    /// <summary>
+    /// Hides the settings panel.
+    /// </summary>
     public void HideSettingsPanel()
     {
         settingsPanel.SetActive(false);
     }
-
 }

@@ -6,27 +6,33 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages the game's settings UI, including SFX and music toggles, and credits panel.
+/// Implements IWantToBeSaved to persist toggle states using the Sijil save system.
+/// </summary>
 public class SettingsManager : MonoBehaviour, IWantToBeSaved
 {
     [Header("Elements")]
-    [SerializeField] private Button sfxButton;
-    [SerializeField] private Button musicButton;
-    [SerializeField] private Button creditsButton;
-    [SerializeField] private GameObject creditsPanel;
-
+    [SerializeField] private Button sfxButton;                // Button to toggle SFX on/off
+    [SerializeField] private Button musicButton;              // Button to toggle music on/off
+    [SerializeField] private Button creditsButton;            // Button to open credits panel
+    [SerializeField] private GameObject creditsPanel;         // UI panel showing credits
 
     [Header("Settings Panel")]
-    [SerializeField] private Color onColor;
-    [SerializeField] private Color offColor;
+    [SerializeField] private Color onColor;                   // Color to indicate toggle ON
+    [SerializeField] private Color offColor;                  // Color to indicate toggle OFF
 
     [Header("Data")]
-    private bool sfxState;
-    private bool musicState;
+    private bool sfxState;                                    // Current SFX state
+    private bool musicState;                                  // Current music state
 
     [Header("Actions")]
-    public static Action<bool> onSFXStateChanged;
-    public static Action<bool> onMusicStateChanged;
+    public static Action<bool> onSFXStateChanged;             // Event invoked when SFX state changes
+    public static Action<bool> onMusicStateChanged;           // Event invoked when music state changes
 
+    /// <summary>
+    /// Sets up button listeners.
+    /// </summary>
     private void Awake()
     {
         sfxButton.onClick.RemoveAllListeners();
@@ -39,8 +45,10 @@ public class SettingsManager : MonoBehaviour, IWantToBeSaved
         creditsButton.onClick.AddListener(CreditsButtonCallback);
     }
 
-
-    // Start is called before the first frame update
+    /// <summary>
+    /// Initializes settings and closes credits panel on start.
+    /// Broadcasts current audio states.
+    /// </summary>
     void Start()
     {
         CloseCreditsPanel();
@@ -49,43 +57,52 @@ public class SettingsManager : MonoBehaviour, IWantToBeSaved
         onMusicStateChanged?.Invoke(musicState);
     }
 
-
-    // Update is called once per frame
     void Update()
     {
-
+        // No per-frame logic
     }
 
+    /// <summary>
+    /// Toggles SFX state, updates visuals, saves, and invokes change event.
+    /// </summary>
     private void SFXButtonCallback()
     {
         sfxState = !sfxState;
         UpdateSFXVisuals();
-
         Save();
-
         onSFXStateChanged?.Invoke(sfxState);
     }
 
+    /// <summary>
+    /// Toggles music state, updates visuals, saves, and invokes change event.
+    /// </summary>
     private void MusicButtonCallback()
     {
         musicState = !musicState;
         UpdateMusicVisuals();
-
         Save();
-
         onMusicStateChanged?.Invoke(musicState);
     }
 
+    /// <summary>
+    /// Opens the credits panel.
+    /// </summary>
     private void CreditsButtonCallback()
     {
         creditsPanel.SetActive(true);
     }
 
+    /// <summary>
+    /// Hides the credits panel.
+    /// </summary>
     public void CloseCreditsPanel()
     {
         creditsPanel.SetActive(false);
     }
 
+    /// <summary>
+    /// Updates SFX button visuals based on current state.
+    /// </summary>
     private void UpdateSFXVisuals()
     {
         if (sfxState)
@@ -100,6 +117,9 @@ public class SettingsManager : MonoBehaviour, IWantToBeSaved
         }
     }
 
+    /// <summary>
+    /// Updates music button visuals based on current state.
+    /// </summary>
     private void UpdateMusicVisuals()
     {
         if (musicState)
@@ -114,7 +134,9 @@ public class SettingsManager : MonoBehaviour, IWantToBeSaved
         }
     }
 
-
+    /// <summary>
+    /// Loads saved settings using Sijil. Defaults to true if no saved values exist.
+    /// </summary>
     public void Load()
     {
         sfxState = true;
@@ -134,6 +156,9 @@ public class SettingsManager : MonoBehaviour, IWantToBeSaved
         UpdateMusicVisuals();
     }
 
+    /// <summary>
+    /// Saves the current SFX and music states using Sijil.
+    /// </summary>
     public void Save()
     {
         Sijil.Save(this, "sfx", sfxState);

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Gifplayer : MonoBehaviour
 {
-    public List<Sprite> gifFrames; // 存储 GIF 的帧
-    public float frameRate = 0.04f; // 每帧的时间间隔
+    public List<Sprite> gifFrames;
+    public float frameRate = 0.04f;
     private SpriteRenderer spriteRenderer;
     private int currentFrame = 0;
     private float timer = 0f;
@@ -23,7 +23,7 @@ public class Gifplayer : MonoBehaviour
         if (timer >= frameRate)
         {
             timer = 0f;
-            currentFrame = (currentFrame + 1) % gifFrames.Count; // 循环播放
+            currentFrame = (currentFrame + 1) % gifFrames.Count;
             spriteRenderer.sprite = gifFrames[currentFrame];
         }
     }
