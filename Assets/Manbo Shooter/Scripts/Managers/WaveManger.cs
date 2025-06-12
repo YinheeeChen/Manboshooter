@@ -14,7 +14,9 @@ public class WaveManger : MonoBehaviour, IGameStateListener
     private WaveManagerUI ui;                               // UI manager for displaying wave info and timer
 
     [Header("Settings")]
-    [SerializeField] private float waveDuration;            // Total duration of each wave in seconds
+    [SerializeField] private float baseWaveDuration;            // Base duration of each wave in seconds
+    [SerializeField] private float addedWaveDuration;            // Additional duration of each wave in seconds
+    private float waveDuration;                             // Total duration of each wave in seconds
     private float timer;                                    // Tracks elapsed time within the current wave
     private bool isTimerOn;                                 // Flag to determine if the wave timer is active
     private int currentWaveIndex;                           // Index of the current wave
@@ -53,6 +55,7 @@ public class WaveManger : MonoBehaviour, IGameStateListener
     /// </summary>
     private void StartWave(int waveIndex)
     {
+        waveDuration = baseWaveDuration + addedWaveDuration * waveIndex;
         ui.UpdateWaveText("Wave " + (currentWaveIndex + 1) + " / " + waves.Length);
 
         localCounters.Clear();

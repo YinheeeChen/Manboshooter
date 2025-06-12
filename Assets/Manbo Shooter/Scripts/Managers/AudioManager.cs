@@ -10,6 +10,8 @@ public class AudioManager : MonoBehaviour
     public bool IsSFXOn { get; private set; }
     public bool IsMusicOn { get; private set; }
     private int lastIndex = -1;
+    private AudioSource[] audioSources;
+    private AudioSource currentMusicSource;
 
     private void Awake()
     {
@@ -18,20 +20,28 @@ public class AudioManager : MonoBehaviour
             instance = this;
             // DontDestroyOnLoad(gameObject);
         }
-            
+
         else
             Destroy(gameObject);
 
-
-
         SettingsManager.onSFXStateChanged += SFXStateChangedCallback;
         SettingsManager.onMusicStateChanged += MusicStateChangedCallback;
+
+        audioSources = GetComponentsInChildren<AudioSource>();
     }
 
     private void OnDestroy()
     {
         SettingsManager.onSFXStateChanged -= SFXStateChangedCallback;
         SettingsManager.onMusicStateChanged -= MusicStateChangedCallback;
+    }
+
+    private void Update()
+    {
+        if (!currentMusicSource.isPlaying)
+        {
+            PlayNextMusic();
+        }
     }
 
     private void SFXStateChangedCallback(bool sfxState)
@@ -43,7 +53,7 @@ public class AudioManager : MonoBehaviour
     {
         IsMusicOn = musicState;
 
-        AudioSource[] audioSources = GetComponentsInChildren<AudioSource>();
+        // AudioSource[] audioSources = GetComponentsInChildren<AudioSource>();
 
         if (musicState)
         {
@@ -55,6 +65,7 @@ public class AudioManager : MonoBehaviour
                     audioSources[i].mute = false;
                     audioSources[i].Stop();
                     audioSources[i].Play();
+                    currentMusicSource = audioSources[i];
                 }
                 else
                 {
@@ -70,6 +81,30 @@ public class AudioManager : MonoBehaviour
             {
                 audioSource.Stop();
                 audioSource.mute = true;
+            }
+        }
+    }
+    
+    private void PlayNextMusic()
+    {
+        if (audioSources == null || audioSources.Length == 0)
+            return;
+
+        lastIndex = (lastIndex + 1) % audioSources.Length;
+
+        for (int i = 0; i < audioSources.Length; i++)
+        {
+            if (i == lastIndex)
+            {
+                currentMusicSource = audioSources[i];
+                currentMusicSource.mute = false;
+                currentMusicSource.Stop();
+                currentMusicSource.Play();
+            }
+            else
+            {
+                audioSources[i].Stop();
+                audioSources[i].mute = true;
             }
         }
     }
