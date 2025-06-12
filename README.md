@@ -42,3 +42,9 @@ tabsil
 Free Platform Game Assets
 - Description: These assets I downloaded from Unity Asset
 - Url: https://assetstore.unity.com/packages/2d/environments/free-platform-game-assets-85838
+LeanTween
+- Description: LeanTween is an efficient tween engine that offers a many of the same features as the other tween engines (and more!) while having much less overhead.
+- Url: https://assetstore.unity.com/packages/tools/animation/leantween-3595
+Resource.unitypackage
+- Description: All additional resources are here, which I got from the lecture resources
+- Url: https://www.udemy.com/course/unity-2d-game-kawaii-survivor-the-coolest-roguelike-ever/?couponCode=202506OFF
