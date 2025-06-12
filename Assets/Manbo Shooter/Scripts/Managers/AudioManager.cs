@@ -38,7 +38,7 @@ public class AudioManager : MonoBehaviour
 
     private void Update()
     {
-        if (!currentMusicSource.isPlaying)
+        if (IsMusicOn && currentMusicSource != null && !currentMusicSource.isPlaying)
         {
             PlayNextMusic();
         }

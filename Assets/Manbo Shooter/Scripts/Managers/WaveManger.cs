@@ -15,7 +15,7 @@ public class WaveManger : MonoBehaviour, IGameStateListener
 
     [Header("Settings")]
     [SerializeField] private float baseWaveDuration;            // Base duration of each wave in seconds
-    [SerializeField] private float addedWaveDuration;            // Additional duration of each wave in seconds
+    [SerializeField] private float addedWaveDuration;            // Total duration of each wave in seconds
     private float waveDuration;                             // Total duration of each wave in seconds
     private float timer;                                    // Tracks elapsed time within the current wave
     private bool isTimerOn;                                 // Flag to determine if the wave timer is active
@@ -24,6 +24,22 @@ public class WaveManger : MonoBehaviour, IGameStateListener
     [Header("Waves")]
     [SerializeField] private Wave[] waves;                  // List of waves, each containing multiple segments
     private List<float> localCounters = new List<float>();  // Counters for each segment to control spawn frequency
+
+    private void OnEnable()
+    {
+        Enemy.onBossPassedAway += OnBossDefeated;
+    }
+
+    private void OnDisable()
+    {
+        Enemy.onBossPassedAway -= OnBossDefeated;
+    }
+
+    private void OnBossDefeated(Vector2 position)
+    {
+        StartWaveTransition();
+    }
+
 
     /// <summary>
     /// Initializes the UI reference.
